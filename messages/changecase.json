@@ -1,0 +1,29 @@
+{
+  "check": {
+    "description": "check the status of a change case record"
+  },
+  "create": {
+    "description": "create a change case record based on a template ID",
+    "flags": {
+      "templateid": {
+        "description": "change case template id"
+      },
+      "schedulebuild": {
+        "description": "schedule build of the new release"
+      }
+    }
+  },
+  "update": {
+    "description": "update the status of a change case record"
+  },
+  "command": {
+    "flags": {
+      "changecaseid": {
+        "description": "change case id"
+      },
+      "bypass": {
+        "description": "bypass the change case commands"
+      }
+    }
+  }
+}
