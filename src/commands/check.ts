@@ -28,8 +28,6 @@ export default class Check extends ChangeCommand {
     changecaseid: ChangeCommand.globalFlags.changecaseid
   };
 
-  protected static requiresUsername = true;
-
   public async run(): Promise<AnyJson> {
     const id = this.flags.changecaseid;
 

@@ -70,8 +70,6 @@ export default class Create extends ChangeCommand {
     })
   };
 
-  protected static requiresUsername = true;
-
   public async run(): Promise<AnyJson> {
     const id = this.flags.templateid;
 

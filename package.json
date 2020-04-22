@@ -2,6 +2,9 @@
   "name": "@salesforce/change-case-management",
   "version": "1.0.0",
   "bugs": "https://github.com/forcedotcom/change-case-management/issues",
+  "bin": {
+    "sfchangecase": "./bin/run"
+  },
   "dependencies": {
     "@oclif/command": "^1",
     "@oclif/config": "^1",

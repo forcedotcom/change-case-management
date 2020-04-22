@@ -7,7 +7,8 @@
  */
 
 import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, SfdxError } from '@salesforce/core';
+import { Messages, SfdxError, AuthInfo, Org, Connection } from '@salesforce/core';
+import { env } from '@salesforce/kit';
 
 // Initialize Messages with the current plugin directory
 Messages.importMessagesDirectory(__dirname);
@@ -30,6 +31,8 @@ export abstract class ChangeCommand extends SfdxCommand {
     return `SF_CHANGE_CASE_${name.toUpperCase()}`;
   }
 
+  protected static supportsUsername = true;
+
   static get flags() {
     return Object.assign(super.flags, {
       bypass: flags.boolean({
@@ -39,8 +42,25 @@ export abstract class ChangeCommand extends SfdxCommand {
     });
   }
 
+  protected hasUserSpecifiedUsername() {
+    return process.argv.find(arg => arg.startsWith('-u') || arg.startsWith('--username'));
+  }
+
   protected async init() {
     await super.init();
+
+    // If the user didn't specify one (testing mode), use the environment variables (CI).
+    if (!this.hasUserSpecifiedUsername()) {
+      const gusAuthUrlEnvName = ChangeCommand.getEnvVarFullName('SFDX_AUTH_URL');
+      const gusAuthUrl = env.getString(gusAuthUrlEnvName);
+      if (!gusAuthUrl) {
+        throw new SfdxError(`Required environment variable ${gusAuthUrlEnvName} not specified.`);
+      }
+
+      const authInfo = await AuthInfo.create({ oauth2Options: AuthInfo.parseSfdxAuthUrl(gusAuthUrl) });
+      const connection = await Connection.create({ authInfo });
+      this.org = await Org.create({ connection });
+    }
 
     if (this.flags.bypass) {
       // Skip the run command

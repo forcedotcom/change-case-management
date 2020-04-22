@@ -39,8 +39,6 @@ export default class Update extends ChangeCommand {
     })
   };
 
-  protected static requiresUsername = true;
-
   public async run(): Promise<AnyJson> {
     const id = this.flags.changecaseid;
 
