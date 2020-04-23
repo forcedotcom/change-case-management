@@ -62,17 +62,10 @@ export default class Create extends ChangeCommand {
       required: true,
       env: ChangeCommand.getEnvVarFullName('TEMPLATE_ID')
     }),
-    schedulebuild: flags.string({
-      description: messages.getMessage('create.flags.schedulebuild.description'),
-      char: 'b',
-      required: true,
-      env: ChangeCommand.getEnvVarFullName('SCHEDULE_BUILD')
+    release: ChangeCommand.globalFlags.release({
+      required: true
     }),
-    sourcelocation: flags.string({
-      description: messages.getMessage('create.flags.schedulebuild.description'),
-      char: 'l',
-      env: ChangeCommand.getEnvVarFullName('REPO')
-    })
+    location: ChangeCommand.globalFlags.location()
   };
 
   public async run(): Promise<AnyJson> {
@@ -86,7 +79,6 @@ export default class Create extends ChangeCommand {
     if (template.RecordTypeId !== CHANGE_TEMPLATE_RECORD_TYPE_ID) {
       throw new SfdxError(`A valid change case template must be supplied. Found ${template.RecordTypeId} but expecting ${CHANGE_TEMPLATE_RECORD_TYPE_ID} `);
     }
-    console.log(template);
 
     const record: Dictionary = {};
 
@@ -95,8 +87,8 @@ export default class Create extends ChangeCommand {
     });
 
     record.RecordTypeId = CHANGE_RECORD_TYPE_ID;
-    record.SM_Source_Control_Location__c = this.flags.sourcelocation || template.SM_Source_Control_Location__c;
-    record.SM_Release__c = this.flags.schedulebuild;
+    record.SM_Source_Control_Location__c = this.flags.location || template.SM_Source_Control_Location__c;
+    record.SM_Release__c = this.flags.release;
 
     const createResult = await CASE.create(record as Case);
 

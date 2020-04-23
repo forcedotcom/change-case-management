@@ -12,7 +12,7 @@ describe('check', () => {
       });
     })
     .stdout()
-    .command(['create', '--targetusername', 'test@org.com', '-i', '00X123456789123', '-b', 'test.build', '-l', 'testlocation'])
+    .command(['create', '--targetusername', 'test@org.com', '-i', '00X123456789123', '-r', 'test.build', '-l', 'https://github.com/myorg/myrepo'])
     .it('runs create --targetusername test@org.com -i 00x1234567889123 -b test.build', ctx => {
       expect(ctx.stdout).to.contain('test created');
     });

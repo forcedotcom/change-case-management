@@ -66,5 +66,8 @@
     "prepack": "yarn clean && yarn build && oclif-dev manifest && oclif-dev readme",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

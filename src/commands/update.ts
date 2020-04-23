@@ -26,7 +26,13 @@ export default class Update extends ChangeCommand {
   public static examples = [];
 
   protected static flagsConfig = {
-    changecaseid: ChangeCommand.globalFlags.changecaseid,
+    changecaseid: ChangeCommand.globalFlags.changecaseid(),
+    release: ChangeCommand.globalFlags.release({
+      dependsOn: ['location']
+    }),
+    location: ChangeCommand.globalFlags.location({
+      dependsOn: ['release']
+    }),
     status: flags.enum({
       description: 'ad',
       char: 's',
@@ -40,8 +46,11 @@ export default class Update extends ChangeCommand {
   };
 
   public async run(): Promise<AnyJson> {
-    const id = this.flags.changecaseid;
+    let id = this.flags.changecaseid;
 
+    if (!id) {
+      id = (await this.retrieveCaseFromIdOrRelease()).Id;
+    }
     const conn = this.org.getConnection();
     const CASE = conn.sobject<Case>('Case');
 

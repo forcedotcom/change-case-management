@@ -8,7 +8,6 @@
 
 import { Messages, SfdxError } from '@salesforce/core';
 import { AnyJson } from '@salesforce/ts-types';
-import { Case } from '../case';
 import { ChangeCommand } from '../changeCommand';
 
 // Initialize Messages with the current plugin directory
@@ -25,16 +24,19 @@ export default class Check extends ChangeCommand {
   public static examples = [];
 
   protected static flagsConfig = {
-    changecaseid: ChangeCommand.globalFlags.changecaseid
+    changecaseid: ChangeCommand.globalFlags.changecaseid(),
+    release: ChangeCommand.globalFlags.release({
+      dependsOn: ['location']
+    }),
+    location: ChangeCommand.globalFlags.location({
+      dependsOn: ['release']
+    })
   };
 
   public async run(): Promise<AnyJson> {
-    const id = this.flags.changecaseid;
+    const changeCase = await this.retrieveCaseFromIdOrRelease();
 
-    const conn = this.org.getConnection();
-    const CASE = conn.sobject<Case>('Case');
-
-    const changeCase = await CASE.retrieve(id);
+    const id = changeCase.Id;
     const status = changeCase.Status;
 
     if (status !== 'Approved') {

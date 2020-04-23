@@ -8,8 +8,11 @@
       "templateid": {
         "description": "change case template id"
       },
-      "schedulebuild": {
+      "release": {
         "description": "schedule build of the new release"
+      },
+      "location": {
+        "description": "url of the source control location"
       }
     }
   },

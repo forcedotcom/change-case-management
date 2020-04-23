@@ -7,6 +7,7 @@
  */
 
 export type Case = {
+  Id: string;
   Type: string;
   RecordTypeId: string;
   Status: string;
