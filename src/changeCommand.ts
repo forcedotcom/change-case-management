@@ -7,7 +7,7 @@
  */
 
 import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, SfdxError, AuthInfo, Org, Connection } from '@salesforce/core';
+import { AuthInfo, Connection, Messages, Org, SfdxError } from '@salesforce/core';
 import { env } from '@salesforce/kit';
 
 // Initialize Messages with the current plugin directory
