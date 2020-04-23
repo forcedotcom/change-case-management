@@ -67,6 +67,11 @@ export default class Create extends ChangeCommand {
       char: 'b',
       required: true,
       env: ChangeCommand.getEnvVarFullName('SCHEDULE_BUILD')
+    }),
+    sourcelocation: flags.string({
+      description: messages.getMessage('create.flags.schedulebuild.description'),
+      char: 'l',
+      env: ChangeCommand.getEnvVarFullName('REPO')
     })
   };
 
@@ -79,7 +84,7 @@ export default class Create extends ChangeCommand {
     const template = await CASE.retrieve(id);
 
     if (template.RecordTypeId !== CHANGE_TEMPLATE_RECORD_TYPE_ID) {
-      throw new SfdxError('A valid change case template must be supplied.');
+      throw new SfdxError(`A valid change case template must be supplied. Found ${template.RecordTypeId} but expecting ${CHANGE_TEMPLATE_RECORD_TYPE_ID} `);
     }
     console.log(template);
 
@@ -90,10 +95,8 @@ export default class Create extends ChangeCommand {
     });
 
     record.RecordTypeId = CHANGE_RECORD_TYPE_ID;
-    record.SM_Source_Control_Location__c = env.getString(ChangeCommand.getEnvVarFullName('REPO'), template.SM_Source_Control_Location__c);
+    record.SM_Source_Control_Location__c = this.flags.sourcelocation || template.SM_Source_Control_Location__c;
     record.SM_Release__c = this.flags.schedulebuild;
-
-    console.log(record);
 
     const createResult = await CASE.create(record as Case);
 

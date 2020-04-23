@@ -43,7 +43,7 @@ export abstract class ChangeCommand extends SfdxCommand {
   }
 
   protected hasUserSpecifiedUsername() {
-    return process.argv.find(arg => arg.startsWith('-u') || arg.startsWith('--username'));
+    return this.argv.find(arg => arg.startsWith('-u') || arg.startsWith('--targetusername'));
   }
 
   protected async init() {

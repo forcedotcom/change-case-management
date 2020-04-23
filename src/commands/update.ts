@@ -57,7 +57,7 @@ export default class Update extends ChangeCommand {
       throw new SfdxError(`Updating release failed with ${updateResults.errors}`);
     }
 
-    this.ux.log(`Release ${updateResults.id} created.`);
+    this.ux.log(`Release ${updateResults.id} set to ${this.flags.status}.`);
 
     return { case: record };
   }
