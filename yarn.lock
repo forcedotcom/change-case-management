@@ -247,10 +247,27 @@
     chalk "^2.4.2"
     cli-ux "^4.9.3"
 
-"@salesforce/core@^2", "@salesforce/core@^2.1.4":
+"@salesforce/core@^2.1.4":
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-2.3.1.tgz#6146bc3827c2cbe2cdae722d4e93818939d58d18"
   integrity sha512-IIurlIt8qSulfvEylG9Ncis2/wSHxAFwxT3Rtyt3P9+5UYNi0BhIEDakbZF12rofvQgSfNklaVbctdU2noW45w==
+  dependencies:
+    "@salesforce/bunyan" "^2.0.0"
+    "@salesforce/kit" "^1.0.0"
+    "@salesforce/ts-sinon" "^1.0.0"
+    "@salesforce/ts-types" "^1.0.0"
+    "@types/jsforce" "1.9.2"
+    debug "^3.1.0"
+    jsen "0.6.6"
+    jsforce "1.9.3"
+    jsonwebtoken "8.5.0"
+    mkdirp "0.5.1"
+    sfdx-faye "^1.0.9"
+
+"@salesforce/core@^2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-2.4.0.tgz#af53f62cd2367e21b7d81589be240718daa1b0b5"
+  integrity sha512-bEbyDEZ9l5cOlwvlglV+qm3QetGNyB635vC8sBQzUJAdckb/I3VKjerjgZHRNiB7ZUtTrHm76XsLmJadxbRIcw==
   dependencies:
     "@salesforce/bunyan" "^2.0.0"
     "@salesforce/kit" "^1.0.0"

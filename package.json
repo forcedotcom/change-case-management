@@ -10,7 +10,7 @@
     "@oclif/config": "^1",
     "@oclif/errors": "^1",
     "@salesforce/command": "^2",
-    "@salesforce/core": "^2",
+    "@salesforce/core": "^2.4.0",
     "@salesforce/kit": "^1.2.2",
     "@salesforce/ts-types": "^1.2.2",
     "shelljs": "^0.8.3",
