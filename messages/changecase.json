@@ -26,6 +26,9 @@
       },
       "bypass": {
         "description": "bypass the change case commands"
+      },
+      "dryrun": {
+        "description": "run the command without making any API calls - all calls will be 'successful'"
       }
     }
   }

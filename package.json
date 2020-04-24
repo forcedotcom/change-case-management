@@ -48,11 +48,6 @@
   "oclif": {
     "commands": "./lib/commands",
     "bin": "sfchangecase",
-    "topics": {
-      "hello": {
-        "description": "Commands to say hello."
-      }
-    },
     "devPlugins": [
       "@oclif/plugin-help"
     ]

@@ -70,4 +70,13 @@ export default class Update extends ChangeCommand {
 
     return { case: record };
   }
+
+  protected async bypassInformation() {
+    let id = this.flags.changecaseid;
+
+    if (!id) {
+      id = (await this.retrieveCaseFromIdOrRelease()).Id;
+    }
+    this.log(`Updating ${id} with status ${this.flags.status}.`);
+  }
 }

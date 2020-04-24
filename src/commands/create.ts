@@ -9,7 +9,7 @@
 import { flags } from '@salesforce/command';
 import { Messages, SfdxError } from '@salesforce/core';
 import { env } from '@salesforce/kit';
-import { AnyJson, Dictionary } from '@salesforce/ts-types';
+import { AnyJson, JsonMap } from '@salesforce/ts-types';
 import { Case } from '../case';
 import { ChangeCommand } from '../changeCommand';
 
@@ -69,6 +69,29 @@ export default class Create extends ChangeCommand {
   };
 
   public async run(): Promise<AnyJson> {
+    const record = await this.prepareRecordToCreate();
+
+    const conn = this.org.getConnection();
+    const CASE = conn.sobject<Case>('Case');
+    const createResult = await CASE.create(record as Case);
+
+    // Only this style of check resolves the createResult.errors check
+    if (createResult.success === false) {
+      throw new SfdxError(`Creating release failed with ${createResult.errors}`);
+    }
+
+    this.ux.log(`Release ${createResult.id} created.`);
+
+    return { id: createResult.id, record };
+  }
+
+  protected async bypassInformation() {
+    const record = await this.prepareRecordToCreate();
+    this.ux.styledHeader('Record to Create');
+    this.ux.logJson(record);
+  }
+
+  private async prepareRecordToCreate() {
     const id = this.flags.templateid;
 
     const conn = this.org.getConnection();
@@ -80,7 +103,7 @@ export default class Create extends ChangeCommand {
       throw new SfdxError(`A valid change case template must be supplied. Found ${template.RecordTypeId} but expecting ${CHANGE_TEMPLATE_RECORD_TYPE_ID} `);
     }
 
-    const record: Dictionary = {};
+    const record: JsonMap = {};
 
     FIELD_TO_CLONE.forEach(field => {
       record[field] = template[field];
@@ -90,15 +113,6 @@ export default class Create extends ChangeCommand {
     record.SM_Source_Control_Location__c = this.flags.location || template.SM_Source_Control_Location__c;
     record.SM_Release__c = this.flags.release;
 
-    const createResult = await CASE.create(record as Case);
-
-    // Only this style of check resolves the createResult.errors check
-    if (createResult.success === false) {
-      throw new SfdxError(`Creating release failed with ${createResult.errors}`);
-    }
-
-    this.ux.log(`Release ${createResult.id} created.`);
-
-    return { id: createResult.id, template };
+    return record;
   }
 }

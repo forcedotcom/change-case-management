@@ -46,4 +46,11 @@ export default class Check extends ChangeCommand {
 
     return { status };
   }
+
+  protected async bypassInformation() {
+    const changeCase = await this.retrieveCaseFromIdOrRelease();
+
+    const id = changeCase.Id;
+    this.log(`The status of ${id} is ${changeCase.Status}.`);
+  }
 }

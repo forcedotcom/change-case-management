@@ -48,6 +48,10 @@ export abstract class ChangeCommand extends SfdxCommand {
       bypass: flags.boolean({
         description: messages.getMessage('command.flags.bypass.description'),
         env: ChangeCommand.getEnvVarFullName('BYPASS')
+      }),
+      dryrun: flags.boolean({
+        description: messages.getMessage('command.flags.dryrun.description'),
+        env: ChangeCommand.getEnvVarFullName('DRYRUN')
       })
     });
   }
@@ -118,11 +122,24 @@ export abstract class ChangeCommand extends SfdxCommand {
       // Skip the run command
       throw new SfdxError('Bypass command', 'bypass');
     }
+    if (this.flags.dryrun) {
+      throw new SfdxError('Dryrun', 'dryrun');
+    }
+  }
+
+  protected async bypassInformation() {
+    const conn = await this.org.getConnection();
+    const result = await conn.query<Case>('SELECT Id FROM Case LIMIT 1');
+    this.ux.log(`Random Case ID to prove connection: ${result.records[0].Id}`);
   }
 
   protected async catch(err) {
     if (err.name === 'bypass') {
       this.ux.log('Command bypassed');
+    } else if (err.name === 'dryrun') {
+      this.ux.log('Command dryrun - skipping command execution.');
+      this.ux.log(`Flags: ${Object.entries(this.flags).map(([key, flag]) => `${key}=${flag}`).join(' ')}`);
+      await this.bypassInformation();
     } else {
       await super.catch(err);
     }
