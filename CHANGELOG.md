@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/forcedotcom/change-case-management/compare/v1.1.0...v1.2.0) (2020-04-24)
+
+
+### Features
+
+* add dryrun for testing CD ([ca1ccef](https://github.com/forcedotcom/change-case-management/commit/ca1ccef01d9ca10192a4424363d9876fb53f3ad7))
+
 # [1.1.0](https://github.com/forcedotcom/change-case-management/compare/v1.0.0...v1.1.0) (2020-04-24)
 
 

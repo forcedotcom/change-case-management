@@ -20,7 +20,7 @@ $ npm install -g @salesforce/change-case-management
 $ sfchangecase COMMAND
 running command...
 $ sfchangecase (-v|--version|version)
-@salesforce/change-case-management/1.1.0 linux-x64 node-v14.0.0
+@salesforce/change-case-management/1.2.0 linux-x64 node-v14.0.0
 $ sfchangecase --help [COMMAND]
 USAGE
   $ sfchangecase COMMAND
@@ -28,18 +28,18 @@ USAGE
 ```
 <!-- usagestop -->
 <!-- commands -->
-* [`sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-check--i-id--r-string--l-url---bypass--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfchangecase create -i <id> -r <string> [-l <url>] [--bypass] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-create--i-id--r-string--l-url---bypass--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfchangecase update [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] [--bypass] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-update--i-id--r-string--l-url--s-closed---deploy-successfulclosed---not-executed---bypass--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+* [`sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-check--i-id--r-string--l-url---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+* [`sfchangecase create -i <id> -r <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-create--i-id--r-string--l-url---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+* [`sfchangecase update [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-update--i-id--r-string--l-url--s-closed---deploy-successfulclosed---not-executed---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 
-## `sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
+## `sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
 check the status of a change case record
 
 ```
 USAGE
-  $ sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [-u <string>] [--apiversion <string>] [--json] 
-  [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
+  $ sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] 
+  [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
   -i, --changecaseid=changecaseid                                                   change case id
@@ -54,22 +54,26 @@ OPTIONS
 
   --bypass                                                                          bypass the change case commands
 
+  --dryrun                                                                          run the command without making any
+                                                                                    API calls - all calls will be
+                                                                                    'successful'
+
   --json                                                                            format output as json
 
   --loglevel=(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)  [default: warn] logging level for
                                                                                     this command invocation
 ```
 
-_See code: [lib/commands/check.js](https://github.com/forcedotcom/change-case-management/blob/v1.1.0/lib/commands/check.js)_
+_See code: [lib/commands/check.js](https://github.com/forcedotcom/change-case-management/blob/v1.2.0/lib/commands/check.js)_
 
-## `sfchangecase create -i <id> -r <string> [-l <url>] [--bypass] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
+## `sfchangecase create -i <id> -r <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
 create a change case record based on a template ID
 
 ```
 USAGE
-  $ sfchangecase create -i <id> -r <string> [-l <url>] [--bypass] [-u <string>] [--apiversion <string>] [--json] 
-  [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
+  $ sfchangecase create -i <id> -r <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] 
+  [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
   -i, --templateid=templateid                                                       (required) change case template id
@@ -86,22 +90,26 @@ OPTIONS
 
   --bypass                                                                          bypass the change case commands
 
+  --dryrun                                                                          run the command without making any
+                                                                                    API calls - all calls will be
+                                                                                    'successful'
+
   --json                                                                            format output as json
 
   --loglevel=(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)  [default: warn] logging level for
                                                                                     this command invocation
 ```
 
-_See code: [lib/commands/create.js](https://github.com/forcedotcom/change-case-management/blob/v1.1.0/lib/commands/create.js)_
+_See code: [lib/commands/create.js](https://github.com/forcedotcom/change-case-management/blob/v1.2.0/lib/commands/create.js)_
 
-## `sfchangecase update [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] [--bypass] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
+## `sfchangecase update [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
 update the status of a change case record
 
 ```
 USAGE
   $ sfchangecase update [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] 
-  [--bypass] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -120,11 +128,15 @@ OPTIONS
 
   --bypass                                                                          bypass the change case commands
 
+  --dryrun                                                                          run the command without making any
+                                                                                    API calls - all calls will be
+                                                                                    'successful'
+
   --json                                                                            format output as json
 
   --loglevel=(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)  [default: warn] logging level for
                                                                                     this command invocation
 ```
 
-_See code: [lib/commands/update.js](https://github.com/forcedotcom/change-case-management/blob/v1.1.0/lib/commands/update.js)_
+_See code: [lib/commands/update.js](https://github.com/forcedotcom/change-case-management/blob/v1.2.0/lib/commands/update.js)_
 <!-- commandsstop -->
