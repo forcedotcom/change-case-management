@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/forcedotcom/change-case-management/compare/v1.0.0...v1.1.0) (2020-04-24)
+
+
+### Features
+
+* add location and release to query without id ([36f4152](https://github.com/forcedotcom/change-case-management/commit/36f4152baf458fadc3692335edc95844e6c2ed35))
+
 # 1.0.0 (2020-04-23)
 
 

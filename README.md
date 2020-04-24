@@ -20,7 +20,7 @@ $ npm install -g @salesforce/change-case-management
 $ sfchangecase COMMAND
 running command...
 $ sfchangecase (-v|--version|version)
-@salesforce/change-case-management/1.0.0 linux-x64 node-v14.0.0
+@salesforce/change-case-management/1.1.0 linux-x64 node-v14.0.0
 $ sfchangecase --help [COMMAND]
 USAGE
   $ sfchangecase COMMAND
@@ -28,21 +28,23 @@ USAGE
 ```
 <!-- usagestop -->
 <!-- commands -->
-* [`sfchangecase check -i <id> [--bypass] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-check--i-id---bypass--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfchangecase create -i <id> -b <string> [-l <string>] [--bypass] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-create--i-id--b-string--l-string---bypass--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfchangecase update -i <id> [-s Closed - Deploy Successful|Closed - Not Executed] [--bypass] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-update--i-id--s-closed---deploy-successfulclosed---not-executed---bypass--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+* [`sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-check--i-id--r-string--l-url---bypass--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+* [`sfchangecase create -i <id> -r <string> [-l <url>] [--bypass] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-create--i-id--r-string--l-url---bypass--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+* [`sfchangecase update [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] [--bypass] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-update--i-id--r-string--l-url--s-closed---deploy-successfulclosed---not-executed---bypass--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 
-## `sfchangecase check -i <id> [--bypass] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
+## `sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
 check the status of a change case record
 
 ```
 USAGE
-  $ sfchangecase check -i <id> [--bypass] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
-  trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
+  $ sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [-u <string>] [--apiversion <string>] [--json] 
+  [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
-  -i, --changecaseid=changecaseid                                                   (required) change case id
+  -i, --changecaseid=changecaseid                                                   change case id
+  -l, --location=location                                                           url of the source control location
+  -r, --release=release                                                             schedule build of the new release
 
   -u, --targetusername=targetusername                                               username or alias for the target
                                                                                     org; overrides default target org
@@ -58,24 +60,23 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [lib/commands/check.js](https://github.com/forcedotcom/change-case-management/blob/v1.0.0/lib/commands/check.js)_
+_See code: [lib/commands/check.js](https://github.com/forcedotcom/change-case-management/blob/v1.1.0/lib/commands/check.js)_
 
-## `sfchangecase create -i <id> -b <string> [-l <string>] [--bypass] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
+## `sfchangecase create -i <id> -r <string> [-l <url>] [--bypass] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
 create a change case record based on a template ID
 
 ```
 USAGE
-  $ sfchangecase create -i <id> -b <string> [-l <string>] [--bypass] [-u <string>] [--apiversion <string>] [--json] 
+  $ sfchangecase create -i <id> -r <string> [-l <url>] [--bypass] [-u <string>] [--apiversion <string>] [--json] 
   [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
-  -b, --schedulebuild=schedulebuild                                                 (required) schedule build of the new
-                                                                                    release
-
   -i, --templateid=templateid                                                       (required) change case template id
+  -l, --location=location                                                           url of the source control location
 
-  -l, --sourcelocation=sourcelocation                                               schedule build of the new release
+  -r, --release=release                                                             (required) schedule build of the new
+                                                                                    release
 
   -u, --targetusername=targetusername                                               username or alias for the target
                                                                                     org; overrides default target org
@@ -91,19 +92,22 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [lib/commands/create.js](https://github.com/forcedotcom/change-case-management/blob/v1.0.0/lib/commands/create.js)_
+_See code: [lib/commands/create.js](https://github.com/forcedotcom/change-case-management/blob/v1.1.0/lib/commands/create.js)_
 
-## `sfchangecase update -i <id> [-s Closed - Deploy Successful|Closed - Not Executed] [--bypass] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
+## `sfchangecase update [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] [--bypass] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
 update the status of a change case record
 
 ```
 USAGE
-  $ sfchangecase update -i <id> [-s Closed - Deploy Successful|Closed - Not Executed] [--bypass] [-u <string>] 
-  [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
+  $ sfchangecase update [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] 
+  [--bypass] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
-  -i, --changecaseid=changecaseid                                                   (required) change case id
+  -i, --changecaseid=changecaseid                                                   change case id
+  -l, --location=location                                                           url of the source control location
+  -r, --release=release                                                             schedule build of the new release
 
   -s, --status=(Closed - Deploy Successful|Closed - Not Executed)                   [default: Closed - Deploy
                                                                                     Successful] ad
@@ -122,5 +126,5 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [lib/commands/update.js](https://github.com/forcedotcom/change-case-management/blob/v1.0.0/lib/commands/update.js)_
+_See code: [lib/commands/update.js](https://github.com/forcedotcom/change-case-management/blob/v1.1.0/lib/commands/update.js)_
 <!-- commandsstop -->
