@@ -7,7 +7,7 @@
  */
 
 import { flags, SfdxCommand } from '@salesforce/command';
-import { AuthInfo, Connection, Messages, Org, SfdxError, Logger } from '@salesforce/core';
+import { AuthInfo, Connection, Logger, Messages, Org, SfdxError } from '@salesforce/core';
 import { env } from '@salesforce/kit';
 import { Case } from './case';
 
