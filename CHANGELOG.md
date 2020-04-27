@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/forcedotcom/change-case-management/compare/v1.2.0...v1.2.1) (2020-04-27)
+
+
+### Bug Fixes
+
+* use standard pre-approved ([bb3447e](https://github.com/forcedotcom/change-case-management/commit/bb3447e4aa4fc8c74c503bd6a582aff2f0093be1))
+
 # [1.2.0](https://github.com/forcedotcom/change-case-management/compare/v1.1.0...v1.2.0) (2020-04-24)
 
 

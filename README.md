@@ -20,7 +20,7 @@ $ npm install -g @salesforce/change-case-management
 $ sfchangecase COMMAND
 running command...
 $ sfchangecase (-v|--version|version)
-@salesforce/change-case-management/1.2.0 linux-x64 node-v14.0.0
+@salesforce/change-case-management/1.2.1 linux-x64 node-v14.0.0
 $ sfchangecase --help [COMMAND]
 USAGE
   $ sfchangecase COMMAND
@@ -64,7 +64,7 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [lib/commands/check.js](https://github.com/forcedotcom/change-case-management/blob/v1.2.0/lib/commands/check.js)_
+_See code: [lib/commands/check.js](https://github.com/forcedotcom/change-case-management/blob/v1.2.1/lib/commands/check.js)_
 
 ## `sfchangecase create -i <id> -r <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -100,7 +100,7 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [lib/commands/create.js](https://github.com/forcedotcom/change-case-management/blob/v1.2.0/lib/commands/create.js)_
+_See code: [lib/commands/create.js](https://github.com/forcedotcom/change-case-management/blob/v1.2.1/lib/commands/create.js)_
 
 ## `sfchangecase update [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -138,5 +138,5 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [lib/commands/update.js](https://github.com/forcedotcom/change-case-management/blob/v1.2.0/lib/commands/update.js)_
+_See code: [lib/commands/update.js](https://github.com/forcedotcom/change-case-management/blob/v1.2.1/lib/commands/update.js)_
 <!-- commandsstop -->
