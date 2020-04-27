@@ -87,7 +87,7 @@ export abstract class ChangeCommand extends SfdxCommand {
       }
 
       const cases = (await conn.query<Case>(
-        'SELECT Id, Status FROM Case WHERE ' +
+        'SELECT Id, Status, SM_ChangeType__c FROM Case WHERE ' +
         `SM_Release__c = '${build.records[0].Id}' AND ` +
         `SM_Source_Control_Location__c = '${location}'`
       )).records;
