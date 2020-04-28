@@ -64,6 +64,68 @@ export abstract class ChangeCommand extends SfdxCommand {
     return this.argv.find(arg => arg.startsWith('-u') || arg.startsWith('--targetusername'));
   }
 
+  protected async retrieveOrCreateBuildId(release: string): Promise<string> {
+    const conn = this.org.getConnection();
+
+    const buildResults = await conn.query<{Id}>(`SELECT Id FROM ADM_Build__c WHERE Name = '${release}'`);
+    const records = buildResults.records;
+
+    if (records.length >= 1) {
+      if (records.length > 1) {
+        this.ux.warn(`More than one ${release} build found. Using the first one.`);
+      }
+      return records[0].Id;
+    } else {
+      const buildCreateResult = await conn.sobject('ADM_Build__c').create({ Name: release });
+      if (buildCreateResult.success) {
+        return buildCreateResult.id;
+      }
+
+      // Only this style of check resolves the createResult.errors check
+      if (buildCreateResult.success === false) {
+        throw new SfdxError(`Creating build failed with ${buildCreateResult.errors}`);
+      }
+    }
+  }
+
+  protected async retrieveOrCreateReleaseId(release: string): Promise<string> {
+    const conn = this.org.getConnection();
+
+    const releaseResults = await conn.query<{Id}>(`SELECT Id FROM ADM_Release__c WHERE Name = '${release}'`);
+    const records = releaseResults.records;
+
+    if (records.length >= 1) {
+      if (records.length > 1) {
+        this.ux.warn(`More than one ${release} release found. Using the first one.`);
+      }
+      return records[0].Id;
+    } else {
+      const releaseRecord = {
+        Name: release,
+        Build__c: await this.retrieveOrCreateBuildId(release)
+      };
+
+      const releaseCreateResult = await conn.sobject('ADM_Release__c').create(releaseRecord);
+      if (releaseCreateResult.success) {
+        return releaseCreateResult.id;
+      }
+
+      // Only this style of check resolves the createResult.errors check
+      if (releaseCreateResult.success === false) {
+        throw new SfdxError(`Creating release failed with ${releaseCreateResult.errors}`);
+      }
+    }
+  }
+
+  protected async retrieveCasesFromRelease(release: string, location: string) {
+    const conn = this.org.getConnection();
+    return (await conn.query<Case>(
+      'SELECT Id, Status, SM_ChangeType__c FROM Case WHERE ' +
+      `SM_Release__c = '${await this.retrieveOrCreateReleaseId(release)}' AND ` +
+      `SM_Source_Control_Location__c = '${location}'`
+    )).records;
+  }
+
   protected async retrieveCaseFromIdOrRelease(): Promise<Case> {
     const conn = this.org.getConnection();
     const CASE = conn.sobject<Case>('Case');
@@ -80,17 +142,7 @@ export abstract class ChangeCommand extends SfdxCommand {
       }
       this.logger.debug('No change case ID provided, using release and location instead.');
 
-      const build = await conn.query<{Id}>(`SELECT Id FROM ADM_Release__c WHERE Name = '${release}'`);
-
-      if (!build || build.totalSize === 0) {
-        throw new SfdxError(`The release ${release} was not found.`);
-      }
-
-      const cases = (await conn.query<Case>(
-        'SELECT Id, Status, SM_ChangeType__c FROM Case WHERE ' +
-        `SM_Release__c = '${build.records[0].Id}' AND ` +
-        `SM_Source_Control_Location__c = '${location}'`
-      )).records;
+      const cases = await this.retrieveCasesFromRelease(release, location);
 
       if (cases.length === 0) {
         throw new SfdxError(`Could not find change case with ${release} and ${location}.`);
@@ -127,7 +179,7 @@ export abstract class ChangeCommand extends SfdxCommand {
     }
   }
 
-  protected async bypassInformation() {
+  protected async dryrunInformation() {
     const conn = await this.org.getConnection();
     const result = await conn.query<Case>('SELECT Id FROM Case LIMIT 1');
     this.ux.log(`Random Case ID to prove connection: ${result.records[0].Id}`);
@@ -139,7 +191,7 @@ export abstract class ChangeCommand extends SfdxCommand {
     } else if (err.name === 'dryrun') {
       this.ux.log('Command dryrun - skipping command execution.');
       this.ux.log(`Flags: ${Object.entries(this.flags).map(([key, flag]) => `${key}=${flag}`).join(' ')}`);
-      await this.bypassInformation();
+      await this.dryrunInformation();
     } else {
       await super.catch(err);
     }

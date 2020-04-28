@@ -71,7 +71,7 @@ export default class Update extends ChangeCommand {
     return { case: record };
   }
 
-  protected async bypassInformation() {
+  protected async dryrunInformation() {
     let id = this.flags.changecaseid;
 
     if (!id) {

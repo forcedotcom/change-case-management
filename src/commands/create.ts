@@ -65,14 +65,21 @@ export default class Create extends ChangeCommand {
     release: ChangeCommand.globalFlags.release({
       required: true
     }),
-    location: ChangeCommand.globalFlags.location()
+    location: ChangeCommand.globalFlags.location(),
+    businessname: flags.id({
+      description: messages.getMessage('create.flags.businessname.description'),
+      char: 'b',
+      env: ChangeCommand.getEnvVarFullName('BUSINESS_NAME')
+    })
   };
 
   public async run(): Promise<AnyJson> {
-    const record = await this.prepareRecordToCreate();
+    await this.validateRelease();
 
     const conn = this.org.getConnection();
     const CASE = conn.sobject<Case>('Case');
+
+    const record = await this.prepareRecordToCreate();
     const createResult = await CASE.create(record as Case);
 
     // Only this style of check resolves the createResult.errors check
@@ -85,10 +92,20 @@ export default class Create extends ChangeCommand {
     return { id: createResult.id, record };
   }
 
-  protected async bypassInformation() {
+  protected async dryrunInformation() {
     const record = await this.prepareRecordToCreate();
     this.ux.styledHeader('Record to Create');
     this.ux.logJson(record);
+  }
+
+  private async validateRelease() {
+    const release = this.flags.release;
+    const location = this.flags.location;
+    const cases = await this.retrieveCasesFromRelease(release, location);
+
+    if (cases.length >= 1) {
+      throw new SfdxError(`There is already a release associated with ${release} for ${location}`);
+    }
   }
 
   private async prepareRecordToCreate() {
@@ -111,8 +128,8 @@ export default class Create extends ChangeCommand {
 
     record.RecordTypeId = CHANGE_RECORD_TYPE_ID;
     record.SM_Source_Control_Location__c = this.flags.location || template.SM_Source_Control_Location__c;
-    record.SM_Release__c = this.flags.release;
-
+    record.SM_Release__c = await this.retrieveOrCreateReleaseId(this.flags.release);
+    record.SM_Business_Name__c = this.flags.businessname || template.SM_Business_Name__c;
     return record;
   }
 }
