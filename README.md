@@ -20,7 +20,7 @@ $ npm install -g @salesforce/change-case-management
 $ sfchangecase COMMAND
 running command...
 $ sfchangecase (-v|--version|version)
-@salesforce/change-case-management/1.3.0 linux-x64 node-v14.0.0
+@salesforce/change-case-management/1.3.1 linux-x64 node-v14.0.0
 $ sfchangecase --help [COMMAND]
 USAGE
   $ sfchangecase COMMAND
@@ -29,7 +29,7 @@ USAGE
 <!-- usagestop -->
 <!-- commands -->
 * [`sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-check--i-id--r-string--l-url---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfchangecase create -i <id> -r <string> [-l <url>] [-b <id>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-create--i-id--r-string--l-url--b-id---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+* [`sfchangecase create -i <id> -r <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-create--i-id--r-string--l-url---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 * [`sfchangecase update [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-update--i-id--r-string--l-url--s-closed---deploy-successfulclosed---not-executed---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 
 ## `sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
@@ -64,23 +64,19 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [lib/commands/check.js](https://github.com/forcedotcom/change-case-management/blob/v1.3.0/lib/commands/check.js)_
+_See code: [lib/commands/check.js](https://github.com/forcedotcom/change-case-management/blob/v1.3.1/lib/commands/check.js)_
 
-## `sfchangecase create -i <id> -r <string> [-l <url>] [-b <id>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
+## `sfchangecase create -i <id> -r <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
 create a change case record based on a template ID
 
 ```
 USAGE
-  $ sfchangecase create -i <id> -r <string> [-l <url>] [-b <id>] [--bypass] [--dryrun] [-u <string>] [--apiversion 
-  <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
+  $ sfchangecase create -i <id> -r <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] 
+  [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
-  -b, --businessname=businessname                                                   infrastructure / team name the case
-                                                                                    belongs to - the business unit name
-
   -i, --templateid=templateid                                                       (required) change case template id
-
   -l, --location=location                                                           url of the source control location
 
   -r, --release=release                                                             (required) schedule build of the new
@@ -104,7 +100,7 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [lib/commands/create.js](https://github.com/forcedotcom/change-case-management/blob/v1.3.0/lib/commands/create.js)_
+_See code: [lib/commands/create.js](https://github.com/forcedotcom/change-case-management/blob/v1.3.1/lib/commands/create.js)_
 
 ## `sfchangecase update [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -142,5 +138,5 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [lib/commands/update.js](https://github.com/forcedotcom/change-case-management/blob/v1.3.0/lib/commands/update.js)_
+_See code: [lib/commands/update.js](https://github.com/forcedotcom/change-case-management/blob/v1.3.1/lib/commands/update.js)_
 <!-- commandsstop -->

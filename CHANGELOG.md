@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/forcedotcom/change-case-management/compare/v1.3.0...v1.3.1) (2020-04-30)
+
+
+### Bug Fixes
+
+* remove invalid business unit and allow create to pass if already created ([6a58586](https://github.com/forcedotcom/change-case-management/commit/6a5858677ecbba94a002376252ca73147fd8053b))
+
 # [1.3.0](https://github.com/forcedotcom/change-case-management/compare/v1.2.1...v1.3.0) (2020-04-28)
 
 
