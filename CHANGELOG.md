@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/forcedotcom/change-case-management/compare/v1.2.1...v1.3.0) (2020-04-28)
+
+
+### Features
+
+* add the ability to set business name and create records and builds if they don't exist ([d165884](https://github.com/forcedotcom/change-case-management/commit/d1658847dedddb221a9d543b36ac2d7a4de8191a))
+
 ## [1.2.1](https://github.com/forcedotcom/change-case-management/compare/v1.2.0...v1.2.1) (2020-04-27)
 
 
