@@ -27,12 +27,12 @@ describe('check', () => {
         success: true,
         id: 'test',
         // Return a record for the check query
-        records: [{}]
+        records: [{ Id: 'test', Status: 'Closed'}]
       });
     })
     .stderr()
     .command(['create', '--targetusername', 'test@org.com', '-i', '00X123456789123', '-r', 'test.build', '-l', 'https://github.com/myorg/myrepo'])
     .it('create fails if change case already exist', ctx => {
-      expect(ctx.stderr).to.contain('already a release associated');
+      expect(ctx.stderr).to.contain('test is already closed');
     });
 });

@@ -4,7 +4,7 @@ describe('check', () => {
   test
     .withOrg({ username: 'test@org.com' }, true)
     .withConnectionRequest(() => {
-      return Promise.resolve({ Status: 'Approved' });
+      return Promise.resolve({ Status: 'Approved, Scheduled' });
     })
     .stdout()
     .command(['check', '--targetusername', 'test@org.com', '-i', '00X123456789123'])
@@ -15,7 +15,7 @@ describe('check', () => {
   test
     .withOrg({ username: 'test@org.com' }, true)
     .withConnectionRequest(() => {
-      return Promise.resolve({records: [{ Id: 'test', Status: 'Approved' }]});
+      return Promise.resolve({records: [{ Id: 'test', Status: 'Approved, Scheduled' }]});
     })
     .stdout()
     .command(['check', '--targetusername', 'test@org.com', '-r', 'offcore.tooling.XX.XX.XX', '-l', 'https://github.com/myorg/myrepo'])

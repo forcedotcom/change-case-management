@@ -65,16 +65,16 @@ export default class Create extends ChangeCommand {
     release: ChangeCommand.globalFlags.release({
       required: true
     }),
-    location: ChangeCommand.globalFlags.location(),
-    businessname: flags.id({
-      description: messages.getMessage('create.flags.businessname.description'),
-      char: 'b',
-      env: ChangeCommand.getEnvVarFullName('BUSINESS_NAME')
-    })
+    location: ChangeCommand.globalFlags.location()
   };
 
   public async run(): Promise<AnyJson> {
-    await this.validateRelease();
+    const existingCase = await this.checkExistingCase();
+
+    if (existingCase) {
+      this.ux.log(`Existing release ${existingCase.Id} found. Skipping create.`);
+      return { id: existingCase.Id, record: existingCase };
+    }
 
     const conn = this.org.getConnection();
     const CASE = conn.sobject<Case>('Case');
@@ -98,14 +98,23 @@ export default class Create extends ChangeCommand {
     this.ux.logJson(record);
   }
 
-  private async validateRelease() {
+  private async checkExistingCase(): Promise<Case | null> {
     const release = this.flags.release;
     const location = this.flags.location;
     const cases = await this.retrieveCasesFromRelease(release, location);
 
-    if (cases.length >= 1) {
-      throw new SfdxError(`There is already a release associated with ${release} for ${location}`);
+    if (cases.length > 1) {
+      // There could be a "Closed - Duplicate" but no need to build in that check until needed.
+      throw new SfdxError(`There is more than one release associated with ${release} for ${location}`);
+    } else if (cases.length === 1) {
+      const existingCase = cases[0];
+
+      if (existingCase.Status.includes('Closed')) {
+        throw new SfdxError(`The associated case ${existingCase.Id} is already closed. Are you sure you have the right release?`);
+      }
+      return existingCase;
     }
+    return null;
   }
 
   private async prepareRecordToCreate() {
@@ -129,7 +138,6 @@ export default class Create extends ChangeCommand {
     record.RecordTypeId = CHANGE_RECORD_TYPE_ID;
     record.SM_Source_Control_Location__c = this.flags.location || template.SM_Source_Control_Location__c;
     record.SM_Release__c = await this.retrieveOrCreateReleaseId(this.flags.release);
-    record.SM_Business_Name__c = this.flags.businessname || template.SM_Business_Name__c;
     return record;
   }
 }

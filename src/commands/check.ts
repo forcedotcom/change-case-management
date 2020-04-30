@@ -46,7 +46,7 @@ export default class Check extends ChangeCommand {
     if (type === CHANGE_TYPE_ID) {
       this.ux.log(`Release ${id} is standard pre-approved.`);
     } else {
-      if (status !== 'Approved') {
+      if (status !== 'Approved, Scheduled') {
         throw new SfdxError(`The release ${id} is set to "${status}" and not approved.`);
       }
       this.ux.log(`Release ${id} is approved.`);

@@ -13,9 +13,6 @@
       },
       "location": {
         "description": "url of the source control location"
-      },
-      "businessname": {
-        "description": "infrastructure / team name the case belongs to - the business unit name"
       }
     }
   },
