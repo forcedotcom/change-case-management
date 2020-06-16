@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/forcedotcom/change-case-management/compare/v1.3.1...v1.3.2) (2020-06-16)
+
+
+### Bug Fixes
+
+* update readme and message ([c2cfabc](https://github.com/forcedotcom/change-case-management/commit/c2cfabc0d8c614de01f525a2b52daf5fc25d50e3))
+
 ## [1.3.1](https://github.com/forcedotcom/change-case-management/compare/v1.3.0...v1.3.1) (2020-04-30)
 
 
