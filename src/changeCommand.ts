@@ -157,6 +157,11 @@ export abstract class ChangeCommand extends SfdxCommand {
   protected async init() {
     await super.init();
 
+    if (this.flags.bypass) {
+      // Skip the run command
+      throw new SfdxError('Bypass command', 'bypass');
+    }
+
     // If the user didn't specify one (testing mode), use the environment variables (CI).
     if (!this.hasUserSpecifiedUsername()) {
       const gusAuthUrlEnvName = ChangeCommand.getEnvVarFullName('SFDX_AUTH_URL');
@@ -170,10 +175,6 @@ export abstract class ChangeCommand extends SfdxCommand {
       this.org = await Org.create({ connection });
     }
 
-    if (this.flags.bypass) {
-      // Skip the run command
-      throw new SfdxError('Bypass command', 'bypass');
-    }
     if (this.flags.dryrun) {
       throw new SfdxError('Dryrun', 'dryrun');
     }
@@ -187,7 +188,7 @@ export abstract class ChangeCommand extends SfdxCommand {
 
   protected async catch(err) {
     if (err.name === 'bypass') {
-      this.ux.log('Command bypassed');
+      this.ux.log('Change case management command was skipped because SF_CHANGE_CASE_BYPASS was set.');
     } else if (err.name === 'dryrun') {
       this.ux.log('Command dryrun - skipping command execution.');
       this.ux.log(`Flags: ${Object.entries(this.flags).map(([key, flag]) => `${key}=${flag}`).join(' ')}`);
