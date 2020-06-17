@@ -156,6 +156,7 @@ export abstract class ChangeCommand extends SfdxCommand {
 
   protected async init() {
     await super.init();
+    this.initializeEnvironmentVariableOptions();
 
     if (this.flags.bypass) {
       // Skip the run command
@@ -195,6 +196,30 @@ export abstract class ChangeCommand extends SfdxCommand {
       await this.dryrunInformation();
     } else {
       await super.catch(err);
+    }
+  }
+
+  // Oclif only supports the env option for flags of type "options".
+  // Massage the results to get it for the other types too.
+  private initializeEnvironmentVariableOptions() {
+    for (const flagName of Object.keys(this.statics.flags)) {
+      const flag = this.statics.flags[flagName];
+      const envVarName = flag.env;
+
+      if (envVarName && process.env[envVarName]) {
+        switch (flag.type) {
+          case 'option': { // handled by oclif
+            break;
+          }
+          case 'boolean': {
+            this.flags[flagName] = env.getBoolean(envVarName);
+            break;
+          }
+          default: {
+            this.flags[flagName] = env.getString(envVarName);
+          }
+        }
+      }
     }
   }
 }
