@@ -1,3 +1,10 @@
+## [1.3.3](https://github.com/forcedotcom/change-case-management/compare/v1.3.2...v1.3.3) (2020-06-17)
+
+
+### Bug Fixes
+
+* initialize bypass with env var ([#3](https://github.com/forcedotcom/change-case-management/issues/3)) ([576bd28](https://github.com/forcedotcom/change-case-management/commit/576bd2864929f39cd52f21cbab22d885f2a05266))
+
 ## [1.3.2](https://github.com/forcedotcom/change-case-management/compare/v1.3.1...v1.3.2) (2020-06-16)
 
 
