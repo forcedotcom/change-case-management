@@ -10,6 +10,9 @@ import { flags, SfdxCommand } from '@salesforce/command';
 import { AuthInfo, Connection, Logger, Messages, Org, SfdxError } from '@salesforce/core';
 import { env } from '@salesforce/kit';
 import { Case } from './case';
+import Option = flags.Option;
+import Url = flags.Url;
+import { Implementation } from './implementation';
 
 // Initialize Messages with the current plugin directory
 Messages.importMessagesDirectory(__dirname);
@@ -19,29 +22,6 @@ Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/change-case-management', 'changecase');
 
 export abstract class ChangeCommand extends SfdxCommand {
-  public static globalFlags = {
-    changecaseid: (opts: object = {}) => flags.id(Object.assign({
-      description: messages.getMessage('command.flags.changecaseid.description'),
-      char: 'i',
-      env: ChangeCommand.getEnvVarFullName('ID')
-    }, opts)),
-    release: (opts: object = {}) => flags.string(Object.assign({
-      description: messages.getMessage('create.flags.release.description'),
-      char: 'r',
-      env: ChangeCommand.getEnvVarFullName('SCHEDULE_BUILD')
-    }, opts)),
-    location: (opts: object = {}) => flags.url(Object.assign({
-      description: messages.getMessage('create.flags.location.description'),
-      char: 'l',
-      env: ChangeCommand.getEnvVarFullName('REPO')
-    }, opts))
-  };
-
-  public static getEnvVarFullName(name: string) {
-    return `SF_CHANGE_CASE_${name.toUpperCase()}`;
-  }
-
-  protected static supportsUsername = true;
 
   static get flags() {
     return Object.assign(super.flags, {
@@ -55,6 +35,29 @@ export abstract class ChangeCommand extends SfdxCommand {
       })
     });
   }
+  public static globalFlags = {
+    changecaseid: (opts: object = {}) => flags.id(Object.assign({
+      description: messages.getMessage('command.flags.changecaseid.description'),
+      char: 'i',
+      env: ChangeCommand.getEnvVarFullName('ID')
+    }, opts) as Option<string>),
+    release: (opts: object = {}) => flags.string(Object.assign({
+      description: messages.getMessage('create.flags.release.description'),
+      char: 'r',
+      env: ChangeCommand.getEnvVarFullName('SCHEDULE_BUILD')
+    }, opts) as Option<string>),
+    location: (opts: object = {}) => flags.url(Object.assign({
+      description: messages.getMessage('create.flags.location.description'),
+      char: 'l',
+      env: ChangeCommand.getEnvVarFullName('REPO')
+    }, opts) as Url)
+  };
+
+  public static getEnvVarFullName(name: string) {
+    return `SF_CHANGE_CASE_${name.toUpperCase()}`;
+  }
+
+  protected static supportsUsername = true;
 
   // I have to redefine these to retain their types. Not sure why.
   protected org?: Org;
@@ -120,9 +123,16 @@ export abstract class ChangeCommand extends SfdxCommand {
   protected async retrieveCasesFromRelease(release: string, location: string) {
     const conn = this.org.getConnection();
     return (await conn.query<Case>(
-      'SELECT Id, Status, SM_ChangeType__c FROM Case WHERE ' +
+      'SELECT Id, Status, SM_ChangeType__c, SM_Implementation_Plan__c FROM Case WHERE ' +
       `SM_Release__c = '${await this.retrieveOrCreateReleaseId(release)}' AND ` +
       `SM_Source_Control_Location__c = '${location}'`
+    )).records;
+  }
+
+  protected async retrieveImplementationFromCase(caseId: string) {
+    const conn = this.org.getConnection();
+    return (await conn.query<Implementation>(
+      `SELECT Id FROM SM_Change_Implementation__c WHERE Case__c = '${caseId}'`
     )).records;
   }
 
@@ -197,6 +207,19 @@ export abstract class ChangeCommand extends SfdxCommand {
     } else {
       await super.catch(err);
     }
+  }
+
+  protected parseErrors(body): string {
+    let result: string = '';
+    if (body.errors) {
+      body.errors.forEach(error => {
+        result += error.message;
+      });
+    } else {
+      result += body[0].message;
+    }
+
+    return result;
   }
 
   // Oclif only supports the env option for flags of type "options".

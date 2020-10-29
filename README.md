@@ -1,6 +1,6 @@
 # Salesforce Change Case Management
 
-Manage change case records in a release management system in Salesforce using something like [Agile Accelerator](https://appexchange.salesforce.com/appxListingDetail?listingId=a0N30000000ps3jEAA). This uses two record types on Case that to manage changes to tools and services during a release; Change Case and Change Case Template. It creates the change case, checks the release is approved, and updates the change case when the release is in the wild.
+Manage change case records in a release management system in Salesforce using something like [Agile Accelerator](https://appexchange.salesforce.com/appxListingDetail?listingId=a0N30000000ps3jEAA). This uses two record types on Case that to manage changes to tools and services during a release; Change Case and Change Case Template. It creates the change case, checks the release is approved, and closes the change case when the release is in the wild.
 
 The typical flow would be:
 
@@ -8,7 +8,7 @@ The typical flow would be:
 1. Build and test staged artifacts.
 1. Check the release is approved. - `sfchangecase check`
 1. Release the artifacts to production.
-1. Update the change case that the release is deployed. - `sfchangecase update`
+1. Close the change case that the release is deployed. - `sfchangecase close`
 
 If there is a lot of time during stage 2 (not part of the same CD process), record the change case ID to be used in step 3 and 5.
 
@@ -54,7 +54,7 @@ USAGE
 <!-- commands -->
 * [`sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-check--i-id--r-string--l-url---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 * [`sfchangecase create -i <id> -r <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-create--i-id--r-string--l-url---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfchangecase update [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-update--i-id--r-string--l-url--s-closed---deploy-successfulclosed---not-executed---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+* [`sfchangecase close [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-close--i-id--r-string--l-url--s-closed---deploy-successfulclosed---not-executed---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 
 ## `sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -126,13 +126,13 @@ OPTIONS
 
 _See code: [lib/commands/create.js](https://github.com/forcedotcom/change-case-management/blob/v1.3.3/lib/commands/create.js)_
 
-## `sfchangecase update [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
+## `sfchangecase close [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
-update the status of a change case record
+update the status of a change case record to closed
 
 ```
 USAGE
-  $ sfchangecase update [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] 
+  $ sfchangecase close [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] 
   [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
@@ -162,5 +162,5 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [lib/commands/update.js](https://github.com/forcedotcom/change-case-management/blob/v1.3.3/lib/commands/update.js)_
+_See code: [lib/commands/close.js](https://github.com/forcedotcom/change-case-management/blob/v1.3.3/lib/commands/close.js)_
 <!-- commandsstop -->

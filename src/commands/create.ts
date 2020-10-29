@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2018, salesforce.com, inc.
  * All rights reserved.
@@ -7,11 +6,14 @@
  */
 
 import { flags } from '@salesforce/command';
-import { Messages, SfdxError } from '@salesforce/core';
+import { Connection, Messages, SfdxError } from '@salesforce/core';
 import { env } from '@salesforce/kit';
 import { AnyJson, JsonMap } from '@salesforce/ts-types';
 import { Case } from '../case';
+import { CaseWithImpl } from '../caseWithImpl';
 import { ChangeCommand } from '../changeCommand';
+import ChangeConfig from '../changeConfig';
+import { Implementation } from '../implementation';
 
 // Initialize Messages with the current plugin directory
 Messages.importMessagesDirectory(__dirname);
@@ -46,7 +48,10 @@ const FIELD_TO_CLONE = [
   'Testing_Method__c',
   'Was_Rollback_or_rap__c',
   'What_is_the_stagger_plan__c',
-  'SM_Pipeline__c'
+  'SM_Pipeline__c',
+  'SM_Risk_Level__c',
+  'Why_is_the_rollback_plan_not_tested__c',
+  'If_Not_Tested_please_explain__c'
 ];
 
 export default class Create extends ChangeCommand {
@@ -65,10 +70,23 @@ export default class Create extends ChangeCommand {
     release: ChangeCommand.globalFlags.release({
       required: true
     }),
-    location: ChangeCommand.globalFlags.location()
+    location: ChangeCommand.globalFlags.location(),
+    changeimplementation: flags.enum({
+      description: 'What change implementation to use',
+      char: 'c',
+      default: 'NPM',
+      options: [
+        'VSCode',
+        'NPM',
+        's3-cli-artifacts',
+        'CodeBuilder'
+      ],
+      env: ChangeCommand.getEnvVarFullName('STATUS')
+    })
   };
 
   public async run(): Promise<AnyJson> {
+    // check for existing case, warn and exit if one already exists
     const existingCase = await this.checkExistingCase();
 
     if (existingCase) {
@@ -77,25 +95,65 @@ export default class Create extends ChangeCommand {
     }
 
     const conn = this.org.getConnection();
-    const CASE = conn.sobject<Case>('Case');
-
     const record = await this.prepareRecordToCreate();
-    const createResult = await CASE.create(record as Case);
 
-    // Only this style of check resolves the createResult.errors check
-    if (createResult.success === false) {
-      throw new SfdxError(`Creating release failed with ${createResult.errors}`);
-    }
+    const createRes = await this.createCase(record, conn);
+    const implementationsToStart = await this.startImplementations(createRes, conn);
 
-    this.ux.log(`Release ${createResult.id} created.`);
+    const config = {
+      change: createRes.id,
+      implementationSteps: implementationsToStart
+    };
 
-    return { id: createResult.id, record };
+    const file = await ChangeConfig.create(ChangeConfig.getDefaultOptions());
+    file.setContentsFromObject(config);
+    await file.write();
+
+    return { id: createRes.id, record };
   }
 
   protected async dryrunInformation() {
     const record = await this.prepareRecordToCreate();
     this.ux.styledHeader('Record to Create');
     this.ux.logJson(record);
+  }
+
+  private async startImplementations(createRes, conn: Connection): Promise<object> {
+    const implementationsToStart = this.generateImplementations(createRes.implementationSteps);
+
+    // start the implementation steps
+    const startResult = await conn.requestRaw({
+      method: 'PATCH',
+      url: conn.instanceUrl + '/services/apexrest/change-management/v1/implementation-steps/start',
+      body: JSON.stringify(implementationsToStart)
+    });
+
+    const startRes = JSON.parse(startResult.body as string);
+    this.ux.log(`implementation step id: ${startRes.results[0].id}`);
+
+    if (startRes.results[0].success === false) {
+      throw new SfdxError(`Starting release failed with ${this.parseErrors(startRes)}`);
+    }
+
+    return implementationsToStart.implementationSteps;
+  }
+
+  private async createCase(record: CaseWithImpl, conn: Connection): Promise<{id: string, implementationSteps: []}> {
+    // create the case with implementation steps
+    const createResult = await conn.requestRaw({
+      method: 'POST',
+      url: conn.instanceUrl + '/services/apexrest/change-management/v1/change-cases',
+      body: JSON.stringify(record)
+    });
+
+    const createRes = JSON.parse(createResult.body as string);
+    this.ux.log(`Release ${createRes.id} created. Check https://gus.lightning.force.com/lightning/r/Case/${createRes.id}/view`);
+
+    if (createRes.success === false) {
+      throw new SfdxError(`Creating release failed with ${this.parseErrors(createRes)}`);
+    }
+
+    return createRes;
   }
 
   private async checkExistingCase(): Promise<Case | null> {
@@ -117,7 +175,21 @@ export default class Create extends ChangeCommand {
     return null;
   }
 
-  private async prepareRecordToCreate() {
+  private generateImplementations(steps: string[]) {
+    if (steps) {
+      const aggregator: object[] = [];
+
+      steps.forEach(step => {
+        aggregator.push({Id: step});
+      });
+
+      return {
+        implementationSteps: aggregator
+      };
+    }
+  }
+
+  private async prepareRecordToCreate(): Promise<CaseWithImpl> {
     const id = this.flags.templateid;
 
     const conn = this.org.getConnection();
@@ -138,6 +210,25 @@ export default class Create extends ChangeCommand {
     record.RecordTypeId = CHANGE_RECORD_TYPE_ID;
     record.SM_Source_Control_Location__c = this.flags.location || template.SM_Source_Control_Location__c;
     record.SM_Release__c = await this.retrieveOrCreateReleaseId(this.flags.release);
-    return record;
+    record.Status = 'Approved, Scheduled';
+    record.SM_Risk_Level__c = 'Low';
+
+    const startTime = new Date();
+    // set the estimated end time 10 minutes in the future
+    const endTime = new Date(startTime.getTime() + (10 * 60000));
+    // @ts-ignore this method is defined
+    const identity = await conn.identity();
+    return {
+        change: record as Case,
+        implementationSteps: [{
+          Description__c: 'releasing the salesforce CLI',
+          OwnerId: identity.user_id,
+          SM_Estimated_Start_Time__c: startTime.toISOString(),
+          SM_Estimated_End_Time__c: endTime.toISOString() ,
+          SM_Implementation_Steps__c : 'N/A',
+          Configuration_Item_Path_List__c: `Salesforce.SF_Off_Core.DeveloperTools.${this.flags.changeimplementation}`,
+          SM_Infrastructure_Type__c: 'Off Core'
+        } as Implementation]
+      } as CaseWithImpl;
   }
 }

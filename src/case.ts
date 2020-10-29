@@ -37,4 +37,6 @@ export type Case = {
   How_was_the_rollback_plan_tested__c: string;
   If_Manual_how_was_this_tested__c: string;
   SM_Pipeline__c: string;
+  SM_Release__c: string;
+  SM_Risk_Level__c: string;
 };

@@ -3,7 +3,7 @@
     "description": "check the status of a change case record"
   },
   "create": {
-    "description": "create a change case record based on a template ID",
+    "description": "create a change case record based on a template ID with one implementation step",
     "flags": {
       "templateid": {
         "description": "change case template id"
@@ -16,8 +16,8 @@
       }
     }
   },
-  "update": {
-    "description": "update the status of a change case record"
+  "close": {
+    "description": "stops the implementation steps, and closes the change case record"
   },
   "command": {
     "flags": {
