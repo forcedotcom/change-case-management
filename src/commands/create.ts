@@ -179,18 +179,12 @@ export default class Create extends ChangeCommand {
     return null;
   }
 
-  private generateImplementations(steps: string[]) {
-    if (steps) {
-      const aggregator: object[] = [];
-
-      steps.forEach((step) => {
-        aggregator.push({ Id: step });
-      });
-
-      return {
-        implementationSteps: aggregator,
-      };
-    }
+  private generateImplementations(steps: string[] = []) {
+    return {
+      implementationSteps: steps.map((step) => ({
+        Id: step,
+      })),
+    };
   }
 
   private async prepareRecordToCreate(): Promise<CaseWithImpl> {
