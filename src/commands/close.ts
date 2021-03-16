@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2018, salesforce.com, inc.
  * All rights reserved.
@@ -20,7 +19,6 @@ Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/change-case-management', 'changecase');
 
 export default class Close extends ChangeCommand {
-
   public static description = messages.getMessage('close.description');
 
   public static examples = [];
@@ -28,22 +26,18 @@ export default class Close extends ChangeCommand {
   protected static flagsConfig = {
     changecaseid: ChangeCommand.globalFlags.changecaseid(),
     release: ChangeCommand.globalFlags.release({
-      dependsOn: ['location']
+      dependsOn: ['location'],
     }),
     location: ChangeCommand.globalFlags.location({
-      dependsOn: ['release']
+      dependsOn: ['release'],
     }),
     status: flags.enum({
       description: 'What the status of the implementation steps should be set to',
       char: 's',
       default: 'Implemented - per plan',
-      options: [
-        'Implemented - per plan',
-        'Not Implemented',
-        'Rolled back - with no impact'
-      ],
-      env: ChangeCommand.getEnvVarFullName('STATUS')
-    })
+      options: ['Implemented - per plan', 'Not Implemented', 'Rolled back - with no impact'],
+      env: ChangeCommand.getEnvVarFullName('STATUS'),
+    }),
   };
 
   public async run(): Promise<AnyJson> {
@@ -71,7 +65,7 @@ export default class Close extends ChangeCommand {
     // delete the config file, until the next release
     await file.unlink();
 
-    return { case: {Id: changecaseid, Status: this.flags.status} };
+    return { case: { Id: changecaseid, Status: this.flags.status } };
   }
 
   protected async dryrunInformation() {
@@ -86,15 +80,13 @@ export default class Close extends ChangeCommand {
   private async closeCase(changecaseid, conn: Connection) {
     // close the case
     const closeBody = {
-      cases: [
-        {Id: changecaseid}
-      ]
+      cases: [{ Id: changecaseid }],
     };
 
     const closeResult = await conn.requestRaw({
       method: 'PATCH',
       url: conn.instanceUrl + '/services/apexrest/change-management/v1/change-cases/close',
-      body: JSON.stringify(closeBody)
+      body: JSON.stringify(closeBody),
     });
 
     const closeRes = JSON.parse(closeResult.body as string);
@@ -109,23 +101,23 @@ export default class Close extends ChangeCommand {
   private async stopImplementation(implementationSteps: object[], conn: Connection) {
     // stop the implementation steps
     // add the status to the implementation steps
-    const implementations: Array<{Id: string, Status__c: string}> = [];
-    implementationSteps.forEach(step => {
+    const implementations: Array<{ Id: string; Status__c: string }> = [];
+    implementationSteps.forEach((step) => {
       implementations.push({
         // @ts-ignore the id field exists on this object
         Id: step.Id,
-        Status__c: this.flags.status
+        Status__c: this.flags.status,
       });
     });
 
     const implementationsToStop = {
-      implementationSteps: implementations
+      implementationSteps: implementations,
     };
 
     const stopResult = await conn.requestRaw({
       method: 'PATCH',
       url: conn.instanceUrl + '/services/apexrest/change-management/v1/implementation-steps/stop',
-      body: JSON.stringify(implementationsToStop)
+      body: JSON.stringify(implementationsToStop),
     });
 
     const stopRes = JSON.parse(stopResult.body as string);

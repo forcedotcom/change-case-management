@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2018, salesforce.com, inc.
  * All rights reserved.
@@ -21,7 +20,6 @@ const messages = Messages.loadMessages('@salesforce/change-case-management', 'ch
 const CHANGE_TYPE_ID = env.getString(ChangeCommand.getEnvVarFullName('CHANGE_TYPE_ID'), 'a8hB00000004DIzIAM');
 
 export default class Check extends ChangeCommand {
-
   public static description = messages.getMessage('check.description');
 
   public static examples = [];
