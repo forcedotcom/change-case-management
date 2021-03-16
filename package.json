@@ -14,8 +14,6 @@
     "@salesforce/kit": "^1.2.2",
     "@salesforce/ts-types": "^1.2.2",
     "shelljs": "^0.8.3",
-    "snyk": "^1.316.1",
-    "ts-node": "^8",
     "tslib": "^1"
   },
   "devDependencies": {
