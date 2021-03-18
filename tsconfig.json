@@ -1,10 +1,8 @@
 {
-  "extends": "./node_modules/@salesforce/dev-config/tsconfig",
+  "extends": "@salesforce/dev-config/tsconfig",
   "compilerOptions": {
-    "outDir": "./lib",
-    "rootDir": "./src"
+    "outDir": "lib",
+    "target": "es2019" // helps vscode linter, even though this is defined in the extended part
   },
-  "include": [
-    "./src/**/*"
-  ]
+  "include": ["./src/**/*.ts"]
 }

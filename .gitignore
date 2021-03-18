@@ -1,10 +1,41 @@
-*-debug.log
-*-error.log
-/.nyc_output
-/dist
-/lib
-/package-lock.json
-/tmp
-node_modules
+# -- CLEAN
+tmp/
+# use yarn by default, so ignore npm
 package-lock.json
-.idea/
+
+# never checkin npm config
+.npmrc
+
+# debug logs
+npm-error.log
+yarn-error.log
+lerna-debug.log
+
+# compile source
+lib
+
+# test artifacts
+*xunit.xml
+*checkstyle.xml
+*unitcoverage
+.nyc_output
+coverage
+test_session*
+
+# generated docs
+docs
+
+# ignore sfdx-trust files
+*.tgz
+*.sig
+package.json.bak.
+
+# -- CLEAN ALL
+node_modules
+
+# --
+# put files here you don't want cleaned with sf-clean
+
+# os specific files
+.DS_Store
+.idea

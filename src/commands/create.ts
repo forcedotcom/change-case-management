@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2018, salesforce.com, inc.
+ * Copyright (c) 2020, salesforce.com, inc.
  * All rights reserved.
- * SPDX-License-Identifier: BSD-3-Clause
- * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+ * Licensed under the BSD 3-Clause license.
+ * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
 import { flags } from '@salesforce/command';
@@ -14,6 +14,7 @@ import { CaseWithImpl } from '../caseWithImpl';
 import { ChangeCommand } from '../changeCommand';
 import ChangeConfig from '../changeConfig';
 import { Implementation } from '../implementation';
+import { Step, ChangeCaseApiResponse, CreateCaseResponse } from '../types';
 
 // Initialize Messages with the current plugin directory
 Messages.importMessagesDirectory(__dirname);
@@ -105,20 +106,20 @@ export default class Create extends ChangeCommand {
       implementationSteps: implementationsToStart,
     };
 
-    const file = await ChangeConfig.create(ChangeConfig.getDefaultOptions());
+    const file = await ChangeConfig.create(ChangeConfig.getDefaultOptions() as Record<string, unknown>);
     file.setContentsFromObject(config);
     await file.write();
 
     return { id: createRes.id, record };
   }
 
-  protected async dryrunInformation() {
+  protected async dryrunInformation(): Promise<void> {
     const record = await this.prepareRecordToCreate();
     this.ux.styledHeader('Record to Create');
     this.ux.logJson(record);
   }
 
-  private async startImplementations(createRes, conn: Connection): Promise<object> {
+  private async startImplementations(createRes: CreateCaseResponse, conn: Connection): Promise<Step[]> {
     const implementationsToStart = this.generateImplementations(createRes.implementationSteps);
 
     // start the implementation steps
@@ -128,7 +129,7 @@ export default class Create extends ChangeCommand {
       body: JSON.stringify(implementationsToStart),
     });
 
-    const startRes = JSON.parse(startResult.body as string);
+    const startRes = (JSON.parse(startResult.body as string) as unknown) as ChangeCaseApiResponse;
     this.ux.log(`implementation step id: ${startRes.results[0].id}`);
 
     if (startRes.results[0].success === false) {
@@ -138,7 +139,7 @@ export default class Create extends ChangeCommand {
     return implementationsToStart.implementationSteps;
   }
 
-  private async createCase(record: CaseWithImpl, conn: Connection): Promise<{ id: string; implementationSteps: [] }> {
+  private async createCase(record: CaseWithImpl, conn: Connection): Promise<CreateCaseResponse> {
     // create the case with implementation steps
     const createResult = await conn.requestRaw({
       method: 'POST',
@@ -146,7 +147,7 @@ export default class Create extends ChangeCommand {
       body: JSON.stringify(record),
     });
 
-    const createRes = JSON.parse(createResult.body as string);
+    const createRes = (JSON.parse(createResult.body as string) as unknown) as CreateCaseResponse;
     this.ux.log(
       `Release ${createRes.id} created. Check https://gus.lightning.force.com/lightning/r/Case/${createRes.id}/view`
     );
@@ -159,8 +160,8 @@ export default class Create extends ChangeCommand {
   }
 
   private async checkExistingCase(): Promise<Case | null> {
-    const release = this.flags.release;
-    const location = this.flags.location;
+    const release = this.flags.release as string;
+    const location = this.flags.location as string;
     const cases = await this.retrieveCasesFromRelease(release, location);
 
     if (cases.length > 1) {
@@ -179,7 +180,7 @@ export default class Create extends ChangeCommand {
     return null;
   }
 
-  private generateImplementations(steps: string[] = []) {
+  private generateImplementations(steps: string[] = []): { implementationSteps: Step[] } {
     return {
       implementationSteps: steps.map((step) => ({
         Id: step,
@@ -188,7 +189,7 @@ export default class Create extends ChangeCommand {
   }
 
   private async prepareRecordToCreate(): Promise<CaseWithImpl> {
-    const id = this.flags.templateid;
+    const id = this.flags.templateid as string;
 
     const conn = this.org.getConnection();
     const CASE = conn.sobject<Case>('Case');
@@ -204,11 +205,11 @@ export default class Create extends ChangeCommand {
     const record: JsonMap = {};
 
     FIELD_TO_CLONE.forEach((field) => {
-      record[field] = template[field];
+      record[field] = template[field] as string;
     });
 
     record.RecordTypeId = CHANGE_RECORD_TYPE_ID;
-    record.SM_Source_Control_Location__c = this.flags.location || template.SM_Source_Control_Location__c;
+    record.SM_Source_Control_Location__c = (this.flags.location as string) || template.SM_Source_Control_Location__c;
     record.SM_Release__c = await this.retrieveOrCreateReleaseId(this.flags.release);
     record.Status = 'Approved, Scheduled';
     record.SM_Risk_Level__c = 'Low';
@@ -216,18 +217,21 @@ export default class Create extends ChangeCommand {
     const startTime = new Date();
     // set the estimated end time 10 minutes in the future
     const endTime = new Date(startTime.getTime() + 10 * 60000);
-    // @ts-ignore this method is defined
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
     const identity = await conn.identity();
     return {
       change: record as Case,
       implementationSteps: [
         {
           Description__c: 'releasing the salesforce CLI',
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
           OwnerId: identity.user_id,
           SM_Estimated_Start_Time__c: startTime.toISOString(),
           SM_Estimated_End_Time__c: endTime.toISOString(),
           SM_Implementation_Steps__c: 'N/A',
-          Configuration_Item_Path_List__c: `Salesforce.SF_Off_Core.DeveloperTools.${this.flags.changeimplementation}`,
+          Configuration_Item_Path_List__c: `Salesforce.SF_Off_Core.DeveloperTools.${
+            this.flags.changeimplementation as string
+          }`,
           SM_Infrastructure_Type__c: 'Off Core',
         } as Implementation,
       ],

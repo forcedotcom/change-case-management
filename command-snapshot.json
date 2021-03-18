@@ -1,0 +1,49 @@
+[
+  {
+    "command": "check",
+    "plugin": "@salesforce/change-case-management",
+    "flags": [
+      "apiversion",
+      "bypass",
+      "changecaseid",
+      "dryrun",
+      "json",
+      "location",
+      "loglevel",
+      "release",
+      "targetusername"
+    ]
+  },
+  {
+    "command": "close",
+    "plugin": "@salesforce/change-case-management",
+    "flags": [
+      "apiversion",
+      "bypass",
+      "changecaseid",
+      "dryrun",
+      "json",
+      "location",
+      "loglevel",
+      "release",
+      "status",
+      "targetusername"
+    ]
+  },
+  {
+    "command": "create",
+    "plugin": "@salesforce/change-case-management",
+    "flags": [
+      "apiversion",
+      "bypass",
+      "changeimplementation",
+      "dryrun",
+      "json",
+      "location",
+      "loglevel",
+      "release",
+      "targetusername",
+      "templateid"
+    ]
+  }
+]
