@@ -52,16 +52,6 @@ export abstract class ChangeCommand extends SfdxCommand {
   };
   protected static supportsUsername = true;
 
-  // I can't come up with a type that doesn't use `any` AND captures the flags.
-  // public static get flags() {
-  //   return Object.assign(super.flags, {
-  //     bypass: flags.boolean({
-  //       description: messages.getMessage('command.flags.bypass.description'),
-  //       env: ChangeCommand.getEnvVarFullName('BYPASS'),
-  //     }),
-  //   });
-  // }
-
   public static getEnvVarFullName(name: string): string {
     return `SF_CHANGE_CASE_${name.toUpperCase()}`;
   }
