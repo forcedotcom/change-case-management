@@ -17,7 +17,7 @@ workflows:
       - release-management/test-package:
           name: node-12
       - release-management/release-package:
-          sign: true
+          # sign: true
           github-release: true
           requires:
             - node-latest
