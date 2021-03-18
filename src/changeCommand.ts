@@ -1,15 +1,15 @@
-
 /*
- * Copyright (c) 2018, salesforce.com, inc.
+ * Copyright (c) 2020, salesforce.com, inc.
  * All rights reserved.
- * SPDX-License-Identifier: BSD-3-Clause
- * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+ * Licensed under the BSD 3-Clause license.
+ * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-
 import { flags, SfdxCommand } from '@salesforce/command';
-import { AuthInfo, Connection, Logger, Messages, Org, SfdxError } from '@salesforce/core';
+import { AuthInfo, Connection, Messages, Org, SfdxError } from '@salesforce/core';
 import { env } from '@salesforce/kit';
 import { Case } from './case';
+import { Implementation } from './implementation';
+import { ChangeCaseApiResponse, CreateCaseResponse } from './types';
 
 // Initialize Messages with the current plugin directory
 Messages.importMessagesDirectory(__dirname);
@@ -20,54 +20,50 @@ const messages = Messages.loadMessages('@salesforce/change-case-management', 'ch
 
 export abstract class ChangeCommand extends SfdxCommand {
   public static globalFlags = {
-    changecaseid: (opts: object = {}) => flags.id(Object.assign({
-      description: messages.getMessage('command.flags.changecaseid.description'),
-      char: 'i',
-      env: ChangeCommand.getEnvVarFullName('ID')
-    }, opts)),
-    release: (opts: object = {}) => flags.string(Object.assign({
-      description: messages.getMessage('create.flags.release.description'),
-      char: 'r',
-      env: ChangeCommand.getEnvVarFullName('SCHEDULE_BUILD')
-    }, opts)),
-    location: (opts: object = {}) => flags.url(Object.assign({
-      description: messages.getMessage('create.flags.location.description'),
-      char: 'l',
-      env: ChangeCommand.getEnvVarFullName('REPO')
-    }, opts))
+    changecaseid: (opts: Record<string, unknown> = {}): flags.String =>
+      flags.id({
+        description: messages.getMessage('command.flags.changecaseid.description'),
+        char: 'i',
+        env: ChangeCommand.getEnvVarFullName('ID'),
+        ...opts,
+      }),
+    release: (opts: Record<string, unknown> = {}): flags.String =>
+      flags.string({
+        description: messages.getMessage('create.flags.release.description'),
+        char: 'r',
+        env: ChangeCommand.getEnvVarFullName('SCHEDULE_BUILD'),
+        ...opts,
+      }),
+    location: (opts: Record<string, unknown> = {}): flags.Url =>
+      flags.url({
+        description: messages.getMessage('create.flags.location.description'),
+        char: 'l',
+        env: ChangeCommand.getEnvVarFullName('REPO'),
+        ...opts,
+      }),
+    bypass: flags.boolean({
+      description: messages.getMessage('command.flags.bypass.description'),
+      env: ChangeCommand.getEnvVarFullName('BYPASS'),
+    }),
+    dryrun: flags.boolean({
+      description: messages.getMessage('command.flags.dryrun.description'),
+      env: ChangeCommand.getEnvVarFullName('DRYRUN'),
+    }),
   };
+  protected static supportsUsername = true;
 
-  public static getEnvVarFullName(name: string) {
+  public static getEnvVarFullName(name: string): string {
     return `SF_CHANGE_CASE_${name.toUpperCase()}`;
   }
 
-  protected static supportsUsername = true;
-
-  static get flags() {
-    return Object.assign(super.flags, {
-      bypass: flags.boolean({
-        description: messages.getMessage('command.flags.bypass.description'),
-        env: ChangeCommand.getEnvVarFullName('BYPASS')
-      }),
-      dryrun: flags.boolean({
-        description: messages.getMessage('command.flags.dryrun.description'),
-        env: ChangeCommand.getEnvVarFullName('DRYRUN')
-      })
-    });
-  }
-
-  // I have to redefine these to retain their types. Not sure why.
-  protected org?: Org;
-  protected logger: Logger;
-
-  protected hasUserSpecifiedUsername() {
-    return this.argv.find(arg => arg.startsWith('-u') || arg.startsWith('--targetusername'));
+  protected hasUserSpecifiedUsername(): boolean {
+    return this.argv.filter((arg) => arg.startsWith('-u') || arg.startsWith('--targetusername')).length > 0;
   }
 
   protected async retrieveOrCreateBuildId(release: string): Promise<string> {
     const conn = this.org.getConnection();
 
-    const buildResults = await conn.query<{Id}>(`SELECT Id FROM ADM_Build__c WHERE Name = '${release}'`);
+    const buildResults = await conn.query<{ Id: string }>(`SELECT Id FROM ADM_Build__c WHERE Name = '${release}'`);
     const records = buildResults.records;
 
     if (records.length >= 1) {
@@ -83,7 +79,7 @@ export abstract class ChangeCommand extends SfdxCommand {
 
       // Only this style of check resolves the createResult.errors check
       if (buildCreateResult.success === false) {
-        throw new SfdxError(`Creating build failed with ${buildCreateResult.errors}`);
+        throw new SfdxError(`Creating build failed with ${buildCreateResult.errors.join(',')}`);
       }
     }
   }
@@ -91,7 +87,7 @@ export abstract class ChangeCommand extends SfdxCommand {
   protected async retrieveOrCreateReleaseId(release: string): Promise<string> {
     const conn = this.org.getConnection();
 
-    const releaseResults = await conn.query<{Id}>(`SELECT Id FROM ADM_Release__c WHERE Name = '${release}'`);
+    const releaseResults = await conn.query<{ Id: string }>(`SELECT Id FROM ADM_Release__c WHERE Name = '${release}'`);
     const records = releaseResults.records;
 
     if (records.length >= 1) {
@@ -102,7 +98,7 @@ export abstract class ChangeCommand extends SfdxCommand {
     } else {
       const releaseRecord = {
         Name: release,
-        Build__c: await this.retrieveOrCreateBuildId(release)
+        Build__c: await this.retrieveOrCreateBuildId(release),
       };
 
       const releaseCreateResult = await conn.sobject('ADM_Release__c').create(releaseRecord);
@@ -112,18 +108,26 @@ export abstract class ChangeCommand extends SfdxCommand {
 
       // Only this style of check resolves the createResult.errors check
       if (releaseCreateResult.success === false) {
-        throw new SfdxError(`Creating release failed with ${releaseCreateResult.errors}`);
+        throw new SfdxError(`Creating release failed with ${releaseCreateResult.errors.join(',')}`);
       }
     }
   }
 
-  protected async retrieveCasesFromRelease(release: string, location: string) {
+  protected async retrieveCasesFromRelease(release: string, location: string): Promise<Case[]> {
     const conn = this.org.getConnection();
-    return (await conn.query<Case>(
-      'SELECT Id, Status, SM_ChangeType__c FROM Case WHERE ' +
-      `SM_Release__c = '${await this.retrieveOrCreateReleaseId(release)}' AND ` +
-      `SM_Source_Control_Location__c = '${location}'`
-    )).records;
+    return (
+      await conn.query<Case>(
+        'SELECT Id, Status, SM_ChangeType__c, SM_Implementation_Plan__c FROM Case WHERE ' +
+          `SM_Release__c = '${await this.retrieveOrCreateReleaseId(release)}' AND ` +
+          `SM_Source_Control_Location__c = '${location}'`
+      )
+    ).records;
+  }
+
+  protected async retrieveImplementationFromCase(caseId: string): Promise<Implementation[]> {
+    const conn = this.org.getConnection();
+    return (await conn.query<Implementation>(`SELECT Id FROM SM_Change_Implementation__c WHERE Case__c = '${caseId}'`))
+      .records;
   }
 
   protected async retrieveCaseFromIdOrRelease(): Promise<Case> {
@@ -134,8 +138,8 @@ export abstract class ChangeCommand extends SfdxCommand {
       this.logger.debug('Using change case ID.');
       return await CASE.retrieve(this.flags.changecaseid);
     } else {
-      const release = this.flags.release;
-      const location = this.flags.location;
+      const release = this.flags.release as string;
+      const location = this.flags.location as string;
 
       if (!release && !location) {
         throw new SfdxError('Either the change case ID OR the release and location need to be provided.');
@@ -148,13 +152,15 @@ export abstract class ChangeCommand extends SfdxCommand {
         throw new SfdxError(`Could not find change case with ${release} and ${location}.`);
       }
       if (cases.length > 1) {
-        throw new SfdxError(`Found more then one change case with ${release} and ${location}. Use the change case ID to remove ambiguity`);
+        throw new SfdxError(
+          `Found more then one change case with ${release} and ${location}. Use the change case ID to remove ambiguity`
+        );
       }
       return cases[0];
     }
   }
 
-  protected async init() {
+  protected async init(): Promise<void> {
     await super.init();
     this.initializeEnvironmentVariableOptions();
 
@@ -173,7 +179,7 @@ export abstract class ChangeCommand extends SfdxCommand {
 
       const authInfo = await AuthInfo.create({ oauth2Options: AuthInfo.parseSfdxAuthUrl(gusAuthUrl) });
       const connection = await Connection.create({ authInfo });
-      this.org = await Org.create({ connection });
+      this.org = await Org.create({ connection });
     }
 
     if (this.flags.dryrun) {
@@ -181,34 +187,48 @@ export abstract class ChangeCommand extends SfdxCommand {
     }
   }
 
-  protected async dryrunInformation() {
-    const conn = await this.org.getConnection();
+  protected async dryrunInformation(): Promise<void> {
+    const conn = this.org.getConnection();
     const result = await conn.query<Case>('SELECT Id FROM Case LIMIT 1');
     this.ux.log(`Random Case ID to prove connection: ${result.records[0].Id}`);
   }
 
-  protected async catch(err) {
+  protected async catch(err: { name: string }): Promise<void> {
     if (err.name === 'bypass') {
       this.ux.log('Change case management command was skipped because SF_CHANGE_CASE_BYPASS was set.');
     } else if (err.name === 'dryrun') {
       this.ux.log('Command dryrun - skipping command execution.');
-      this.ux.log(`Flags: ${Object.entries(this.flags).map(([key, flag]) => `${key}=${flag}`).join(' ')}`);
+      this.ux.log(
+        `Flags: ${Object.entries(this.flags)
+          .map(([key, flag]) => `${key}=${flag as string}`)
+          .join(' ')}`
+      );
       await this.dryrunInformation();
     } else {
       await super.catch(err);
     }
   }
 
+  protected parseErrors(body: ChangeCaseApiResponse | CreateCaseResponse): string {
+    if (body.errors) {
+      return body.errors.map((error) => error.message).join(',');
+    }
+    if (body.results) {
+      return body.results[0]?.message;
+    }
+  }
+
   // Oclif only supports the env option for flags of type "options".
   // Massage the results to get it for the other types too.
-  private initializeEnvironmentVariableOptions() {
+  private initializeEnvironmentVariableOptions(): void {
     for (const flagName of Object.keys(this.statics.flags)) {
       const flag = this.statics.flags[flagName];
       const envVarName = flag.env;
 
       if (envVarName && process.env[envVarName]) {
         switch (flag.type) {
-          case 'option': { // handled by oclif
+          case 'option': {
+            // handled by oclif
             break;
           }
           case 'boolean': {

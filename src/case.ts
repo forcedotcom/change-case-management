@@ -1,9 +1,8 @@
-
 /*
- * Copyright (c) 2018, salesforce.com, inc.
+ * Copyright (c) 2020, salesforce.com, inc.
  * All rights reserved.
- * SPDX-License-Identifier: BSD-3-Clause
- * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+ * Licensed under the BSD 3-Clause license.
+ * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
 export type Case = {
@@ -37,4 +36,6 @@ export type Case = {
   How_was_the_rollback_plan_tested__c: string;
   If_Manual_how_was_this_tested__c: string;
   SM_Pipeline__c: string;
+  SM_Release__c: string;
+  SM_Risk_Level__c: string;
 };

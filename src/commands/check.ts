@@ -1,9 +1,8 @@
-
 /*
- * Copyright (c) 2018, salesforce.com, inc.
+ * Copyright (c) 2020, salesforce.com, inc.
  * All rights reserved.
- * SPDX-License-Identifier: BSD-3-Clause
- * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+ * Licensed under the BSD 3-Clause license.
+ * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
 import { Messages, SfdxError } from '@salesforce/core';
@@ -21,7 +20,6 @@ const messages = Messages.loadMessages('@salesforce/change-case-management', 'ch
 const CHANGE_TYPE_ID = env.getString(ChangeCommand.getEnvVarFullName('CHANGE_TYPE_ID'), 'a8hB00000004DIzIAM');
 
 export default class Check extends ChangeCommand {
-
   public static description = messages.getMessage('check.description');
 
   public static examples = [];
@@ -29,11 +27,13 @@ export default class Check extends ChangeCommand {
   protected static flagsConfig = {
     changecaseid: ChangeCommand.globalFlags.changecaseid(),
     release: ChangeCommand.globalFlags.release({
-      dependsOn: ['location']
+      dependsOn: ['location'],
     }),
     location: ChangeCommand.globalFlags.location({
-      dependsOn: ['release']
-    })
+      dependsOn: ['release'],
+    }),
+    bypass: ChangeCommand.globalFlags.bypass,
+    dryrun: ChangeCommand.globalFlags.dryrun,
   };
 
   public async run(): Promise<AnyJson> {
@@ -54,7 +54,7 @@ export default class Check extends ChangeCommand {
     return { id, status, type };
   }
 
-  protected async dryrunInformation() {
+  protected async dryrunInformation(): Promise<void> {
     const changeCase = await this.retrieveCaseFromIdOrRelease();
 
     const id = changeCase.Id;
