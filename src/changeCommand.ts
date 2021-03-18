@@ -41,30 +41,33 @@ export abstract class ChangeCommand extends SfdxCommand {
         env: ChangeCommand.getEnvVarFullName('REPO'),
         ...opts,
       }),
+    bypass: flags.boolean({
+      description: messages.getMessage('command.flags.bypass.description'),
+      env: ChangeCommand.getEnvVarFullName('BYPASS'),
+    }),
+    dryrun: flags.boolean({
+      description: messages.getMessage('command.flags.dryrun.description'),
+      env: ChangeCommand.getEnvVarFullName('DRYRUN'),
+    }),
   };
   protected static supportsUsername = true;
 
   // I can't come up with a type that doesn't use `any` AND captures the flags.
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type,@typescript-eslint/explicit-module-boundary-types
-  public static get flags() {
-    return Object.assign(super.flags, {
-      bypass: flags.boolean({
-        description: messages.getMessage('command.flags.bypass.description'),
-        env: ChangeCommand.getEnvVarFullName('BYPASS'),
-      }),
-      dryrun: flags.boolean({
-        description: messages.getMessage('command.flags.dryrun.description'),
-        env: ChangeCommand.getEnvVarFullName('DRYRUN'),
-      }),
-    });
-  }
+  // public static get flags() {
+  //   return Object.assign(super.flags, {
+  //     bypass: flags.boolean({
+  //       description: messages.getMessage('command.flags.bypass.description'),
+  //       env: ChangeCommand.getEnvVarFullName('BYPASS'),
+  //     }),
+  //   });
+  // }
 
   public static getEnvVarFullName(name: string): string {
     return `SF_CHANGE_CASE_${name.toUpperCase()}`;
   }
 
   protected hasUserSpecifiedUsername(): boolean {
-    return this.argv.find((arg) => arg.startsWith('-u') || arg.startsWith('--targetusername')).length > 0;
+    return this.argv.filter((arg) => arg.startsWith('-u') || arg.startsWith('--targetusername')).length > 0;
   }
 
   protected async retrieveOrCreateBuildId(release: string): Promise<string> {

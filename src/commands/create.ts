@@ -12,7 +12,6 @@ import { AnyJson, JsonMap } from '@salesforce/ts-types';
 import { Case } from '../case';
 import { CaseWithImpl } from '../caseWithImpl';
 import { ChangeCommand } from '../changeCommand';
-import ChangeConfig from '../changeConfig';
 import { Implementation } from '../implementation';
 import { Step, ChangeCaseApiResponse, CreateCaseResponse } from '../types';
 
@@ -84,6 +83,8 @@ export default class Create extends ChangeCommand {
       options: ['VSCode', 'NPM', 's3-cli-artifacts', 'CodeBuilder'],
       env: ChangeCommand.getEnvVarFullName('STATUS'),
     }),
+    bypass: ChangeCommand.globalFlags.bypass,
+    dryrun: ChangeCommand.globalFlags.dryrun,
   };
 
   public async run(): Promise<AnyJson> {
@@ -99,16 +100,7 @@ export default class Create extends ChangeCommand {
     const record = await this.prepareRecordToCreate();
 
     const createRes = await this.createCase(record, conn);
-    const implementationsToStart = await this.startImplementations(createRes, conn);
-
-    const config = {
-      change: createRes.id,
-      implementationSteps: implementationsToStart,
-    };
-
-    const file = await ChangeConfig.create(ChangeConfig.getDefaultOptions() as Record<string, unknown>);
-    file.setContentsFromObject(config);
-    await file.write();
+    await this.startImplementations(createRes, conn);
 
     return { id: createRes.id, record };
   }

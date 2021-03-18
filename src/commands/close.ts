@@ -9,7 +9,6 @@ import { flags } from '@salesforce/command';
 import { Connection, Messages, SfdxError } from '@salesforce/core';
 import { AnyJson } from '@salesforce/ts-types';
 import { ChangeCommand } from '../changeCommand';
-import ChangeConfig from '../changeConfig';
 import { Implementation } from '../implementation';
 import { ChangeCaseApiResponse } from '../types';
 
@@ -40,21 +39,16 @@ export default class Close extends ChangeCommand {
       options: ['Implemented - per plan', 'Not Implemented', 'Rolled back - with no impact'],
       env: ChangeCommand.getEnvVarFullName('STATUS'),
     }),
+    bypass: ChangeCommand.globalFlags.bypass,
+    dryrun: ChangeCommand.globalFlags.dryrun,
   };
 
   public async run(): Promise<AnyJson> {
     // get the Case Id from the file, or the release
-    const file = await ChangeConfig.create(ChangeConfig.getDefaultOptions() as Record<string, unknown>);
-    const config = await file.read();
 
-    let changecaseid = (this.flags.changecaseid as string) || (config.change as string);
+    const changecaseid = (this.flags.changecaseid as string) ?? (await this.retrieveCaseFromIdOrRelease()).Id;
 
-    if (!changecaseid) {
-      changecaseid = (await this.retrieveCaseFromIdOrRelease()).Id;
-    }
-
-    const implementationSteps =
-      (config.implementationSteps as Implementation[]) ?? (await this.retrieveImplementationFromCase(changecaseid));
+    const implementationSteps = await this.retrieveImplementationFromCase(changecaseid);
 
     const conn = this.org.getConnection();
 
@@ -62,7 +56,6 @@ export default class Close extends ChangeCommand {
     await this.closeCase(changecaseid, conn);
 
     // delete the config file, until the next release
-    await file.unlink();
 
     return { case: { Id: changecaseid, Status: this.flags.status as string } };
   }

@@ -32,6 +32,8 @@ export default class Check extends ChangeCommand {
     location: ChangeCommand.globalFlags.location({
       dependsOn: ['release'],
     }),
+    bypass: ChangeCommand.globalFlags.bypass,
+    dryrun: ChangeCommand.globalFlags.dryrun,
   };
 
   public async run(): Promise<AnyJson> {
