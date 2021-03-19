@@ -140,12 +140,13 @@ export default class Create extends ChangeCommand {
     });
 
     const createRes = (JSON.parse(createResult.body as string) as unknown) as CreateCaseResponse;
-    this.ux.log(
-      `Release ${createRes.id} created. Check https://gus.lightning.force.com/lightning/r/Case/${createRes.id}/view`
-    );
 
     if (createRes.success === false) {
       throw new SfdxError(`Creating release failed with ${this.parseErrors(createRes)}`);
+    } else {
+      this.ux.log(
+        `Release ${createRes.id} created. Check https://gus.lightning.force.com/lightning/r/Case/${createRes.id}/view`
+      );
     }
 
     return createRes;
