@@ -76,12 +76,11 @@ export default class Create extends ChangeCommand {
       required: true,
     }),
     location: ChangeCommand.globalFlags.location(),
-    changeimplementation: flags.enum({
+    configurationitem: flags.string({
       description: 'What change implementation to use',
+      required: true,
       char: 'c',
-      default: 'NPM',
-      options: ['VSCode', 'NPM', 's3-cli-artifacts', 'CodeBuilder'],
-      env: ChangeCommand.getEnvVarFullName('STATUS'),
+      env: ChangeCommand.getEnvVarFullName('CONFIGURATION_ITEM'),
     }),
     bypass: ChangeCommand.globalFlags.bypass,
     dryrun: ChangeCommand.globalFlags.dryrun,
