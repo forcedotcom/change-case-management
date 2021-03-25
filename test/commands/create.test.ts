@@ -9,6 +9,7 @@ import { Connection } from '@salesforce/core';
 
 describe('create', () => {
   test
+    .env({ SF_CHANGE_CASE_CONFIGURATION_ITEM: 'NPM' })
     .withOrg({ username: 'test@org.com' }, true)
     .withConnectionRequest(() => {
       return Promise.resolve({
@@ -41,6 +42,7 @@ describe('create', () => {
     });
 
   test
+    .env({ SF_CHANGE_CASE_CONFIGURATION_ITEM: 'NPM' })
     .withOrg({ username: 'test@org.com' }, true)
     .withConnectionRequest(() => {
       return Promise.resolve({

@@ -76,12 +76,11 @@ export default class Create extends ChangeCommand {
       required: true,
     }),
     location: ChangeCommand.globalFlags.location(),
-    changeimplementation: flags.enum({
+    configurationitem: flags.string({
       description: 'What change implementation to use',
+      required: true,
       char: 'c',
-      default: 'NPM',
-      options: ['VSCode', 'NPM', 's3-cli-artifacts', 'CodeBuilder'],
-      env: ChangeCommand.getEnvVarFullName('STATUS'),
+      env: ChangeCommand.getEnvVarFullName('CONFIGURATION_ITEM'),
     }),
     bypass: ChangeCommand.globalFlags.bypass,
     dryrun: ChangeCommand.globalFlags.dryrun,
@@ -140,12 +139,13 @@ export default class Create extends ChangeCommand {
     });
 
     const createRes = (JSON.parse(createResult.body as string) as unknown) as CreateCaseResponse;
-    this.ux.log(
-      `Release ${createRes.id} created. Check https://gus.lightning.force.com/lightning/r/Case/${createRes.id}/view`
-    );
 
     if (createRes.success === false) {
       throw new SfdxError(`Creating release failed with ${this.parseErrors(createRes)}`);
+    } else {
+      this.ux.log(
+        `Release ${createRes.id} created. Check https://gus.lightning.force.com/lightning/r/Case/${createRes.id}/view`
+      );
     }
 
     return createRes;
@@ -222,7 +222,7 @@ export default class Create extends ChangeCommand {
           SM_Estimated_End_Time__c: endTime.toISOString(),
           SM_Implementation_Steps__c: 'N/A',
           Configuration_Item_Path_List__c: `Salesforce.SF_Off_Core.DeveloperTools.${
-            this.flags.changeimplementation as string
+            this.flags.configurationitem as string
           }`,
           SM_Infrastructure_Type__c: 'Off Core',
         } as Implementation,
