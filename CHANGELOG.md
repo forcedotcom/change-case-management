@@ -1,3 +1,18 @@
+# Changelog
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [1.3.4](https://github.com/forcedotcom/change-case-management/compare/v1.3.3...v1.3.4) (2021-03-25)
+
+
+### Bug Fixes
+
+* .snyk & package.json to reduce vulnerabilities ([58fcf74](https://github.com/forcedotcom/change-case-management/commit/58fcf747933d887f9174bd8a75c22768b9cc9e7a))
+* .snyk & package.json to reduce vulnerabilities ([b58aad9](https://github.com/forcedotcom/change-case-management/commit/b58aad94f9506a9526310df35bea17db7ad3aa3c))
+* checks for create errors before trying success ([ddf95e9](https://github.com/forcedotcom/change-case-management/commit/ddf95e955947bab7e4b0dc1dba3b7c1aac926f3f))
+* rename configuration item ([75aa9b3](https://github.com/forcedotcom/change-case-management/commit/75aa9b3d88bd28e9d31e5055ebccab1034e23fb0))
+* rename configuration item flag ([ff527a2](https://github.com/forcedotcom/change-case-management/commit/ff527a2789a83f76cf37ecec81acb2f3a43c994f))
+
 ## [1.3.3](https://github.com/forcedotcom/change-case-management/compare/v1.3.2...v1.3.3) (2020-06-17)
 
 

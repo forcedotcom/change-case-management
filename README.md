@@ -36,28 +36,25 @@ The most important environment variable is for authentication. Set `SF_CHANGE_CA
 ## Installing
 
 <!-- usage -->
-
 ```sh-session
 $ npm install -g @salesforce/change-case-management
 $ sfchangecase COMMAND
 running command...
 $ sfchangecase (-v|--version|version)
-@salesforce/change-case-management/1.3.3 linux-x64 node-v14.4.0
+@salesforce/change-case-management/1.3.3 linux-x64 node-v12.18.4
 $ sfchangecase --help [COMMAND]
 USAGE
   $ sfchangecase COMMAND
 ...
 ```
-
 <!-- usagestop -->
 
 ## Commands
 
 <!-- commands -->
-
-- [`sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-check--i-id--r-string--l-url---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-- [`sfchangecase create -i <id> -r <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-create--i-id--r-string--l-url---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-- [`sfchangecase close [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-close--i-id--r-string--l-url--s-closed---deploy-successfulclosed---not-executed---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+* [`sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-check--i-id--r-string--l-url---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+* [`sfchangecase close [-i <id>] [-r <string> -l <url>] [-s Implemented - per plan|Not Implemented|Rolled back - with no impact] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-close--i-id--r-string--l-url--s-implemented---per-plannot-implementedrolled-back---with-no-impact---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+* [`sfchangecase create -i <id> -r <string> -c <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-create--i-id--r-string--c-string--l-url---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 
 ## `sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -65,7 +62,7 @@ check the status of a change case record
 
 ```
 USAGE
-  $ sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>]
+  $ sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] 
   [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -91,19 +88,63 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [lib/commands/check.js](https://github.com/forcedotcom/change-case-management/blob/v1.3.3/lib/commands/check.js)_
+_See code: [src/commands/check.ts](https://github.com/forcedotcom/change-case-management/blob/v1.3.3/src/commands/check.ts)_
 
-## `sfchangecase create -i <id> -r <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
+## `sfchangecase close [-i <id>] [-r <string> -l <url>] [-s Implemented - per plan|Not Implemented|Rolled back - with no impact] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
-create a change case record based on a template ID
+stops the implementation steps, and closes the change case record
 
 ```
 USAGE
-  $ sfchangecase create -i <id> -r <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>]
-  [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
+  $ sfchangecase close [-i <id>] [-r <string> -l <url>] [-s Implemented - per plan|Not Implemented|Rolled back - with no 
+  impact] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
+  -i, --changecaseid=changecaseid                                                     change case id
+  -l, --location=location                                                             url of the source control location
+  -r, --release=release                                                               schedule build of the new release
+
+  -s, --status=(Implemented - per plan|Not Implemented|Rolled back - with no impact)  [default: Implemented - per plan]
+                                                                                      What the status of the
+                                                                                      implementation steps should be set
+                                                                                      to
+
+  -u, --targetusername=targetusername                                                 username or alias for the target
+                                                                                      org; overrides default target org
+
+  --apiversion=apiversion                                                             override the api version used for
+                                                                                      api requests made by this command
+
+  --bypass                                                                            bypass the change case commands
+
+  --dryrun                                                                            run the command without making any
+                                                                                      API calls - all calls will be
+                                                                                      'successful'
+
+  --json                                                                              format output as json
+
+  --loglevel=(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)    [default: warn] logging level for
+                                                                                      this command invocation
+```
+
+_See code: [src/commands/close.ts](https://github.com/forcedotcom/change-case-management/blob/v1.3.3/src/commands/close.ts)_
+
+## `sfchangecase create -i <id> -r <string> -c <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
+
+create a change case record based on a template ID with one implementation step
+
+```
+USAGE
+  $ sfchangecase create -i <id> -r <string> -c <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion 
+  <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
+
+OPTIONS
+  -c, --configurationitem=configurationitem                                         (required) What change
+                                                                                    implementation to use
+
   -i, --templateid=templateid                                                       (required) change case template id
+
   -l, --location=location                                                           url of the source control location
 
   -r, --release=release                                                             (required) schedule build of the new
@@ -127,44 +168,5 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [lib/commands/create.js](https://github.com/forcedotcom/change-case-management/blob/v1.3.3/lib/commands/create.js)_
-
-## `sfchangecase close [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
-
-update the status of a change case record to closed
-
-```
-USAGE
-  $ sfchangecase close [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed]
-  [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel
-  trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
-
-OPTIONS
-  -i, --changecaseid=changecaseid                                                   change case id
-  -l, --location=location                                                           url of the source control location
-  -r, --release=release                                                             schedule build of the new release
-
-  -s, --status=(Closed - Deploy Successful|Closed - Not Executed)                   [default: Closed - Deploy
-                                                                                    Successful] ad
-
-  -u, --targetusername=targetusername                                               username or alias for the target
-                                                                                    org; overrides default target org
-
-  --apiversion=apiversion                                                           override the api version used for
-                                                                                    api requests made by this command
-
-  --bypass                                                                          bypass the change case commands
-
-  --dryrun                                                                          run the command without making any
-                                                                                    API calls - all calls will be
-                                                                                    'successful'
-
-  --json                                                                            format output as json
-
-  --loglevel=(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)  [default: warn] logging level for
-                                                                                    this command invocation
-```
-
-_See code: [lib/commands/close.js](https://github.com/forcedotcom/change-case-management/blob/v1.3.3/lib/commands/close.js)_
-
+_See code: [src/commands/create.ts](https://github.com/forcedotcom/change-case-management/blob/v1.3.3/src/commands/create.ts)_
 <!-- commandsstop -->
