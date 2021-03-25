@@ -4,8 +4,8 @@ Manage change case records in a release management system in Salesforce using so
 
 The typical flow would be:
 
-1. Create a change case before doing a release. - `sfchangecase create`
 1. Build and test staged artifacts.
+1. Create a change case before doing a release. - `sfchangecase create`
 1. Check the release is approved. - `sfchangecase check`
 1. Release the artifacts to production.
 1. Close the change case that the release is deployed. - `sfchangecase close`
@@ -16,19 +16,19 @@ If there is a lot of time during stage 2 (not part of the same CD process), reco
 
 All options are configurable by environment variables and are prefixed with `SF_CHANGE_CASE`. All command parameters can use environment variable as defaults. They are snake cased with the prefix.
 
-The most important environment variable is for authentication. Set `SFDX_CHANGE_CASE_SFDX_AUTH_URL` to the SFDX auth url to the org in which the change cases will be created.
+The most important environment variable is for authentication. Set `SF_CHANGE_CASE_SFDX_AUTH_URL` to the SFDX auth url to the org in which the change cases will be created.
 
 **All command configuration:**
-| Environment Variable         | Description |
+| Environment Variable | Description |
 | ---------------------------- | ----------- |
 | SF_CHANGE_CASE_SFDX_AUTH_URL | The SFDX auth url to authenticate to a Salesforce org that the change cases belong to. |
-| SF_CHANGE_CASE_BYPASS        | Skip the change case command. |
-| SF_CHANGE_CASE_DRYRUN        | Run the command without making any DML to an org. Authentication is still required. |
+| SF_CHANGE_CASE_BYPASS | Skip the change case command. |
+| SF_CHANGE_CASE_DRYRUN | Run the command without making any DML to an org. Authentication is still required. |
 
 **Create command configuration:**
-| Environment Variable                          | Description |
+| Environment Variable | Description |
 | --------------------------------------------- | ----------- |
-| SF_CHANGE_CASE_CHANGE_RECORD_TYPE_ID          | The case record type ID for a change case. This will be the different for different orgs. |
+| SF_CHANGE_CASE_CHANGE_RECORD_TYPE_ID | The case record type ID for a change case. This will be the different for different orgs. |
 | SF_CHANGE_CASE_CHANGE_TEMPLATE_RECORD_TYPE_ID | The case record type ID for a change case template. This will be the different for different orgs. |
 
 <!-- install -->
@@ -36,6 +36,7 @@ The most important environment variable is for authentication. Set `SFDX_CHANGE_
 ## Installing
 
 <!-- usage -->
+
 ```sh-session
 $ npm install -g @salesforce/change-case-management
 $ sfchangecase COMMAND
@@ -47,14 +48,16 @@ USAGE
   $ sfchangecase COMMAND
 ...
 ```
+
 <!-- usagestop -->
 
 ## Commands
 
 <!-- commands -->
-* [`sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-check--i-id--r-string--l-url---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfchangecase create -i <id> -r <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-create--i-id--r-string--l-url---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfchangecase close [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-close--i-id--r-string--l-url--s-closed---deploy-successfulclosed---not-executed---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+
+- [`sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-check--i-id--r-string--l-url---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfchangecase create -i <id> -r <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-create--i-id--r-string--l-url---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfchangecase close [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-close--i-id--r-string--l-url--s-closed---deploy-successfulclosed---not-executed---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 
 ## `sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -62,7 +65,7 @@ check the status of a change case record
 
 ```
 USAGE
-  $ sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] 
+  $ sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>]
   [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -96,7 +99,7 @@ create a change case record based on a template ID
 
 ```
 USAGE
-  $ sfchangecase create -i <id> -r <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] 
+  $ sfchangecase create -i <id> -r <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>]
   [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -132,8 +135,8 @@ update the status of a change case record to closed
 
 ```
 USAGE
-  $ sfchangecase close [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed] 
-  [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfchangecase close [-i <id>] [-r <string> -l <url>] [-s Closed - Deploy Successful|Closed - Not Executed]
+  [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -163,4 +166,5 @@ OPTIONS
 ```
 
 _See code: [lib/commands/close.js](https://github.com/forcedotcom/change-case-management/blob/v1.3.3/lib/commands/close.js)_
+
 <!-- commandsstop -->

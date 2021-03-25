@@ -222,7 +222,7 @@ export default class Create extends ChangeCommand {
           SM_Estimated_End_Time__c: endTime.toISOString(),
           SM_Implementation_Steps__c: 'N/A',
           Configuration_Item_Path_List__c: `Salesforce.SF_Off_Core.DeveloperTools.${
-            this.flags.changeimplementation as string
+            this.flags.configurationitem as string
           }`,
           SM_Infrastructure_Type__c: 'Off Core',
         } as Implementation,

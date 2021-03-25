@@ -17,6 +17,7 @@ Messages.importMessagesDirectory(__dirname);
 // or any library that is using the messages framework can also be loaded this way.
 const messages = Messages.loadMessages('@salesforce/change-case-management', 'changecase');
 
+// ID for Standard Pre Approved
 const CHANGE_TYPE_ID = env.getString(ChangeCommand.getEnvVarFullName('CHANGE_TYPE_ID'), 'a8hB00000004DIzIAM');
 
 export default class Check extends ChangeCommand {
