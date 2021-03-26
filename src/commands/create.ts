@@ -13,7 +13,7 @@ import { Case } from '../case';
 import { CaseWithImpl } from '../caseWithImpl';
 import { ChangeCommand } from '../changeCommand';
 import { Implementation } from '../implementation';
-import { Step, ChangeCaseApiResponse, CreateCaseResponse } from '../types';
+import { Step, StartApiResponse, CreateCaseResponse } from '../types';
 
 // Initialize Messages with the current plugin directory
 Messages.importMessagesDirectory(__dirname);
@@ -112,11 +112,18 @@ export default class Create extends ChangeCommand {
       body: JSON.stringify(implementationsToStart),
     });
 
-    const startRes = (JSON.parse(startResult.body as string) as unknown) as ChangeCaseApiResponse;
+    const startRes = (JSON.parse(startResult.body as string) as unknown) as StartApiResponse;
     this.ux.log(`implementation step id: ${startRes.results[0].id}`);
 
-    if (startRes.results[0].success === false) {
-      throw new SfdxError(`Starting release failed with ${this.parseErrors(startRes)}`);
+    if (startRes.hasErrors) {
+      if (!this.flags.json) {
+        this.ux.logJson(startRes);
+      }
+      throw new SfdxError(
+        `Starting release failed with ${startRes.results
+          .map((result) => result.errors.map((error) => error.message.message).join(','))
+          .join(',')}`
+      );
     }
 
     return implementationsToStart.implementationSteps;

@@ -26,3 +26,29 @@ export interface CreateCaseResponse {
   errors?: [{ message: string }];
   results?: [{ message: string }];
 }
+
+export interface StartApiResponse {
+  hasErrors: boolean;
+  results: [
+    {
+      success: boolean;
+      id: string;
+      errors?: [
+        {
+          message?: {
+            blockedLock: {
+              configurationItem: {
+                id: string;
+                name: string;
+                path: string;
+              };
+              title: string;
+            };
+            message?: string;
+          };
+          errorCode: string;
+        }
+      ];
+    }
+  ];
+}
