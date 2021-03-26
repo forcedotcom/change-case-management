@@ -30,6 +30,7 @@ The most important environment variable is for authentication. Set `SF_CHANGE_CA
 | --------------------------------------------- | ----------- |
 | SF_CHANGE_CASE_CHANGE_RECORD_TYPE_ID | The case record type ID for a change case. This will be the different for different orgs. |
 | SF_CHANGE_CASE_CHANGE_TEMPLATE_RECORD_TYPE_ID | The case record type ID for a change case template. This will be the different for different orgs. |
+| SF_CHANGE_CASE_CONFIGURATION_ITEM | The record type ID for the configuration item. This will be the different for different orgs. |
 
 <!-- install -->
 
