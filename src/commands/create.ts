@@ -87,14 +87,6 @@ export default class Create extends ChangeCommand {
   };
 
   public async run(): Promise<AnyJson> {
-    // check for existing case, warn and exit if one already exists
-    const existingCase = await this.checkExistingCase();
-
-    if (existingCase) {
-      this.ux.log(`Existing release ${existingCase.Id} found. Skipping create.`);
-      return { id: existingCase.Id, record: existingCase };
-    }
-
     const conn = this.org.getConnection();
     const record = await this.prepareRecordToCreate();
 
@@ -149,27 +141,6 @@ export default class Create extends ChangeCommand {
     }
 
     return createRes;
-  }
-
-  private async checkExistingCase(): Promise<Case | null> {
-    const release = this.flags.release as string;
-    const location = this.flags.location as string;
-    const cases = await this.retrieveCasesFromRelease(release, location);
-
-    if (cases.length > 1) {
-      // There could be a "Closed - Duplicate" but no need to build in that check until needed.
-      throw new SfdxError(`There is more than one release associated with ${release} for ${location}`);
-    } else if (cases.length === 1) {
-      const existingCase = cases[0];
-
-      if (existingCase.Status.includes('Closed')) {
-        throw new SfdxError(
-          `The associated case ${existingCase.Id} is already closed. Are you sure you have the right release?`
-        );
-      }
-      return existingCase;
-    }
-    return null;
   }
 
   private generateImplementations(steps: string[] = []): { implementationSteps: Step[] } {
