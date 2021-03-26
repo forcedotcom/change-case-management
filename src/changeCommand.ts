@@ -146,14 +146,16 @@ export abstract class ChangeCommand extends SfdxCommand {
       }
       this.logger.debug('No change case ID provided, using release and location instead.');
 
-      const cases = await this.retrieveCasesFromRelease(release, location);
+      const cases = (await this.retrieveCasesFromRelease(release, location)).filter(
+        (item) => !item.Status.includes('Closed')
+      );
 
       if (cases.length === 0) {
-        throw new SfdxError(`Could not find change case with ${release} and ${location}.`);
+        throw new SfdxError(`Could not find change case with ${release} and ${location} and non-Closed status.`);
       }
       if (cases.length > 1) {
         throw new SfdxError(
-          `Found more then one change case with ${release} and ${location}. Use the change case ID to remove ambiguity`
+          `Found more then one change case with ${release} and ${location} and non-Closed status. Use the change case ID to remove ambiguity`
         );
       }
       return cases[0];
