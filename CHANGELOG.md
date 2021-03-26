@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.6](https://github.com/forcedotcom/change-case-management/compare/v1.3.5...v1.3.6) (2021-03-26)
+
+
+### Bug Fixes
+
+* only tries to close non-closed cases ([efd8f92](https://github.com/forcedotcom/change-case-management/commit/efd8f92d0dc63adc5e0b0652f75c6b56242dcbf9))
+* typing for startResponse ([eebf8d2](https://github.com/forcedotcom/change-case-management/commit/eebf8d2fa59fdb2203543bdfa744d2acc6c00479))
+
 ### [1.3.5](https://github.com/forcedotcom/change-case-management/compare/v1.3.4...v1.3.5) (2021-03-26)
 
 
