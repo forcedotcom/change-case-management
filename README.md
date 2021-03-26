@@ -41,7 +41,7 @@ $ npm install -g @salesforce/change-case-management
 $ sfchangecase COMMAND
 running command...
 $ sfchangecase (-v|--version|version)
-@salesforce/change-case-management/1.3.3 linux-x64 node-v12.18.4
+@salesforce/change-case-management/1.3.4 linux-x64 node-v12.18.4
 $ sfchangecase --help [COMMAND]
 USAGE
   $ sfchangecase COMMAND
@@ -88,7 +88,7 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src/commands/check.ts](https://github.com/forcedotcom/change-case-management/blob/v1.3.3/src/commands/check.ts)_
+_See code: [src/commands/check.ts](https://github.com/forcedotcom/change-case-management/blob/v1.3.4/src/commands/check.ts)_
 
 ## `sfchangecase close [-i <id>] [-r <string> -l <url>] [-s Implemented - per plan|Not Implemented|Rolled back - with no impact] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -128,7 +128,7 @@ OPTIONS
                                                                                       this command invocation
 ```
 
-_See code: [src/commands/close.ts](https://github.com/forcedotcom/change-case-management/blob/v1.3.3/src/commands/close.ts)_
+_See code: [src/commands/close.ts](https://github.com/forcedotcom/change-case-management/blob/v1.3.4/src/commands/close.ts)_
 
 ## `sfchangecase create -i <id> -r <string> -c <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -168,5 +168,5 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src/commands/create.ts](https://github.com/forcedotcom/change-case-management/blob/v1.3.3/src/commands/create.ts)_
+_See code: [src/commands/create.ts](https://github.com/forcedotcom/change-case-management/blob/v1.3.4/src/commands/create.ts)_
 <!-- commandsstop -->

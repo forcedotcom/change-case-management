@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.5](https://github.com/forcedotcom/change-case-management/compare/v1.3.4...v1.3.5) (2021-03-26)
+
+
+### Bug Fixes
+
+* remove existing case check (we won't leave open!) ([e592a2c](https://github.com/forcedotcom/change-case-management/commit/e592a2c8d600b9914fd64f3517a7058d5c40e080))
+
 ### [1.3.4](https://github.com/forcedotcom/change-case-management/compare/v1.3.3...v1.3.4) (2021-03-25)
 
 
