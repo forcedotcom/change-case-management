@@ -13,6 +13,9 @@
       },
       "location": {
         "description": "url of the source control location"
+      },
+      "configurationitem": {
+        "description": "Full path from the configuration item, ex: Salesforce.SF_Off_Core.DeveloperTools.NPM"
       }
     }
   },
