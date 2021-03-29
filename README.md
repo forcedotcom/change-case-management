@@ -30,12 +30,14 @@ The most important environment variable is for authentication. Set `SF_CHANGE_CA
 | --------------------------------------------- | ----------- |
 | SF_CHANGE_CASE_CHANGE_RECORD_TYPE_ID | The case record type ID for a change case. This will be the different for different orgs. |
 | SF_CHANGE_CASE_CHANGE_TEMPLATE_RECORD_TYPE_ID | The case record type ID for a change case template. This will be the different for different orgs. |
+| SF_CHANGE_CASE_CONFIGURATION_ITEM | Full path from the configuration item, ex: Salesforce.SF_Off_Core.DeveloperTools.NPM. |
 
 <!-- install -->
 
 ## Installing
 
 <!-- usage -->
+
 ```sh-session
 $ npm install -g @salesforce/change-case-management
 $ sfchangecase COMMAND
@@ -47,14 +49,16 @@ USAGE
   $ sfchangecase COMMAND
 ...
 ```
+
 <!-- usagestop -->
 
 ## Commands
 
 <!-- commands -->
-* [`sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-check--i-id--r-string--l-url---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfchangecase close [-i <id>] [-r <string> -l <url>] [-s Implemented - per plan|Not Implemented|Rolled back - with no impact] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-close--i-id--r-string--l-url--s-implemented---per-plannot-implementedrolled-back---with-no-impact---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfchangecase create -i <id> -r <string> -c <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-create--i-id--r-string--c-string--l-url---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+
+- [`sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-check--i-id--r-string--l-url---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfchangecase close [-i <id>] [-r <string> -l <url>] [-s Implemented - per plan|Not Implemented|Rolled back - with no impact] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-close--i-id--r-string--l-url--s-implemented---per-plannot-implementedrolled-back---with-no-impact---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfchangecase create -i <id> -r <string> -c <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfchangecase-create--i-id--r-string--c-string--l-url---bypass---dryrun--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 
 ## `sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -62,7 +66,7 @@ check the status of a change case record
 
 ```
 USAGE
-  $ sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] 
+  $ sfchangecase check [-i <id>] [-r <string> -l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>]
   [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -96,8 +100,8 @@ stops the implementation steps, and closes the change case record
 
 ```
 USAGE
-  $ sfchangecase close [-i <id>] [-r <string> -l <url>] [-s Implemented - per plan|Not Implemented|Rolled back - with no 
-  impact] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfchangecase close [-i <id>] [-r <string> -l <url>] [-s Implemented - per plan|Not Implemented|Rolled back - with no
+  impact] [--bypass] [--dryrun] [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -136,7 +140,7 @@ create a change case record based on a template ID with one implementation step
 
 ```
 USAGE
-  $ sfchangecase create -i <id> -r <string> -c <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion 
+  $ sfchangecase create -i <id> -r <string> -c <string> [-l <url>] [--bypass] [--dryrun] [-u <string>] [--apiversion
   <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -169,4 +173,5 @@ OPTIONS
 ```
 
 _See code: [src/commands/create.ts](https://github.com/forcedotcom/change-case-management/blob/v1.3.5/src/commands/create.ts)_
+
 <!-- commandsstop -->
