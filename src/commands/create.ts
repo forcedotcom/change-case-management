@@ -77,7 +77,7 @@ export default class Create extends ChangeCommand {
     }),
     location: ChangeCommand.globalFlags.location(),
     configurationitem: flags.string({
-      description: 'What change implementation to use',
+      description: messages.getMessage('create.flags.configurationitem.description'),
       required: true,
       char: 'c',
       env: ChangeCommand.getEnvVarFullName('CONFIGURATION_ITEM'),
@@ -199,9 +199,7 @@ export default class Create extends ChangeCommand {
           SM_Estimated_Start_Time__c: startTime.toISOString(),
           SM_Estimated_End_Time__c: endTime.toISOString(),
           SM_Implementation_Steps__c: 'N/A',
-          Configuration_Item_Path_List__c: `Salesforce.SF_Off_Core.DeveloperTools.${
-            this.flags.configurationitem as string
-          }`,
+          Configuration_Item_Path_List__c: this.flags.configurationitem as string,
           SM_Infrastructure_Type__c: 'Off Core',
         } as Implementation,
       ],
