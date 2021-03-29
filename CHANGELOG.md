@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/forcedotcom/change-case-management/compare/v1.3.6...v1.4.0) (2021-03-29)
+
+
+### Features
+
+* config item uses full name ([5c66fbf](https://github.com/forcedotcom/change-case-management/commit/5c66fbfb3514c5f67010a8f0c42c327292f3e7ae))
+
 ### [1.3.6](https://github.com/forcedotcom/change-case-management/compare/v1.3.5...v1.3.6) (2021-03-26)
 
 
