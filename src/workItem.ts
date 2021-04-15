@@ -7,5 +7,5 @@
 
 export type WorkItem = {
   Id: string;
-  agf__Scheduled_Build__c: string;
+  Scheduled_Build__c: string;
 };
