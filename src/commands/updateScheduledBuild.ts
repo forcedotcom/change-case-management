@@ -44,5 +44,7 @@ export default class UpdateScheduledBuild extends WorkItemCommand {
     const scheduledbuild = this.flags.scheduledbuild as string;
 
     await this.updateScheduledBuildOnWorkItem(scheduledbuild, workItemId);
+
+    this.ux.log(`Work Item ${workItemId} updated with scheduled build ${scheduledbuild}`);
   }
 }

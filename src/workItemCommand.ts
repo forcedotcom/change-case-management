@@ -7,7 +7,6 @@
 import { flags, SfdxCommand } from '@salesforce/command';
 import { AuthInfo, Connection, Messages, Org, SfdxError } from '@salesforce/core';
 import { env } from '@salesforce/kit';
-import { Case } from './case';
 import { ChangeCaseApiResponse, CreateCaseResponse } from './types';
 import { WorkItem } from './workItem';
 
@@ -96,8 +95,8 @@ export abstract class WorkItemCommand extends SfdxCommand {
 
   protected async dryrunInformation(): Promise<void> {
     const conn = this.org.getConnection();
-    const result = await conn.query<Case>('SELECT Id FROM Case LIMIT 1');
-    this.ux.log(`Random Case ID to prove connection: ${result.records[0].Id}`);
+    const result = await conn.query<WorkItem>('SELECT Id FROM agf__ADM_Work__c LIMIT 1');
+    this.ux.log(`Random WI ID to prove connection: ${result.records[0].Id}`);
   }
 
   protected async catch(err: { name: string }): Promise<void> {
