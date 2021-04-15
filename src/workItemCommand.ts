@@ -39,9 +39,7 @@ export abstract class WorkItemCommand extends SfdxCommand {
 
   protected async updateScheduledBuildOnWorkItem(buildName: string, workIdName: string): Promise<void> {
     const conn = this.org.getConnection();
-    const buildResults = await conn.query<{ Id: string }>(
-      `SELECT Id FROM agf__ADM_Build__c WHERE Name = '${buildName}'`
-    );
+    const buildResults = await conn.query<{ Id: string }>(`SELECT Id FROM ADM_Build__c WHERE Name = '${buildName}'`);
     const buildRecords = buildResults.records;
     let buildRecordId: string;
     if (buildRecords.length >= 1) {
@@ -53,7 +51,7 @@ export abstract class WorkItemCommand extends SfdxCommand {
       throw new SfdxError(`Invalid build name ${buildName}`);
     }
     const workItems = await conn.query<WorkItem>(
-      `SELECT Id, agf__Scheduled_Build__c FROM agf__ADM_Work__c WHERE Name = '${workIdName}'`
+      `SELECT Id, Scheduled_Build__c FROM ADM_Work__c WHERE Name = '${workIdName}'`
     );
     if (workItems.records.length === 0) {
       throw new SfdxError(`No workitem found for name ${workIdName}`);
@@ -61,8 +59,8 @@ export abstract class WorkItemCommand extends SfdxCommand {
       throw new SfdxError(`More than one workitem found for name ${workIdName}`);
     } else {
       const workItemToUpdate = workItems.records[0];
-      workItemToUpdate.agf__Scheduled_Build__c = buildRecordId;
-      await conn.sobject('agf__ADM_Work__c').update(workItemToUpdate);
+      workItemToUpdate.Scheduled_Build__c = buildRecordId;
+      await conn.sobject('ADM_Work__c').update(workItemToUpdate);
     }
   }
 
@@ -95,7 +93,7 @@ export abstract class WorkItemCommand extends SfdxCommand {
 
   protected async dryrunInformation(): Promise<void> {
     const conn = this.org.getConnection();
-    const result = await conn.query<WorkItem>('SELECT Id FROM agf__ADM_Work__c LIMIT 1');
+    const result = await conn.query<WorkItem>('SELECT Id FROM ADM_Work__c LIMIT 1');
     this.ux.log(`Random WI ID to prove connection: ${result.records[0].Id}`);
   }
 
