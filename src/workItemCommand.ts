@@ -39,29 +39,15 @@ export abstract class WorkItemCommand extends SfdxCommand {
 
   protected async updateScheduledBuildOnWorkItem(buildName: string, workIdName: string): Promise<void> {
     const conn = this.org.getConnection();
-    const buildResults = await conn.query<{ Id: string }>(`SELECT Id FROM ADM_Build__c WHERE Name = '${buildName}'`);
-    const buildRecords = buildResults.records;
-    let buildRecordId: string;
-    if (buildRecords.length >= 1) {
-      if (buildRecords.length > 1) {
-        this.ux.warn(`More than one ${buildName} build found. Using the first one.`);
-      }
-      buildRecordId = buildRecords[0].Id;
-    } else {
-      throw new SfdxError(`Invalid build name ${buildName}`);
-    }
-    const workItems = await conn.query<WorkItem>(
+    const buildRecord = await conn.singleRecordQuery<{ Id: string }>(
+      `SELECT Id FROM ADM_Build__c WHERE Name = '${buildName}'`
+    );
+    const buildRecordId: string = buildRecord.Id;
+    const workItemToUpdate = await conn.singleRecordQuery<WorkItem>(
       `SELECT Id, Scheduled_Build__c FROM ADM_Work__c WHERE Name = '${workIdName}'`
     );
-    if (workItems.records.length === 0) {
-      throw new SfdxError(`No workitem found for name ${workIdName}`);
-    } else if (workItems.records.length > 1) {
-      throw new SfdxError(`More than one workitem found for name ${workIdName}`);
-    } else {
-      const workItemToUpdate = workItems.records[0];
-      workItemToUpdate.Scheduled_Build__c = buildRecordId;
-      await conn.sobject('ADM_Work__c').update(workItemToUpdate);
-    }
+    workItemToUpdate.Scheduled_Build__c = buildRecordId;
+    await conn.sobject('ADM_Work__c').update(workItemToUpdate);
   }
 
   protected async init(): Promise<void> {
