@@ -45,5 +45,10 @@
       "targetusername",
       "templateid"
     ]
+  },
+  {
+    "command": "updateScheduledBuild",
+    "plugin": "@salesforce/change-case-management",
+    "flags": ["apiversion", "bypass", "dryrun", "json", "loglevel", "targetusername", "workitemid", "scheduledbuild"]
   }
 ]
