@@ -1,34 +1,24 @@
 version: 2.1
 orbs:
   release-management: salesforce/npm-release-management@4
-
 parameters:
   run-auto-workflows:
-    description: |
+    description: >
       Boolean that controls when an workflow would run.
+
       It is used to gate which workflows should run when github events occur.
-      This parameter is used by automation to determine if a workflow will run within a pipeline.
+
+      This parameter is used by automation to determine if a workflow will run
+      within a pipeline.
     default: true
     type: boolean
-  run-dependabot-automerge:
-    description: >
-      Boolean that controls when dependabot-automerge will run
-
-      This parameter is used by an scheduled trigger to determine if the
-      dependabot-automerge workflow will run.
-    type: boolean
-  run-test-ts-update:
-    description: >
-      Boolean that controls when test-ts-update will run
-
-      This parameter is used by an scheduled trigger to determine if the
-      test-ts-update workflow will run.
-    type: boolean
-    default: false
   run-just-nuts:
-    description: |
+    description: >
       Boolean that controls when the just-nuts will run.
-      Default value is false and this parameter is used by automation to determine if
+
+      Default value is false and this parameter is used by automation to
+      determine if
+
       the just-nuts workflow will run.
     default: false
     type: boolean
@@ -42,8 +32,12 @@ parameters:
     description: The tag of the module repo to checkout, '' defaults to branch/PR
     default: ''
     type: string
-
+  npm_module_name:
+    description: The fully qualified npm module name, i.e. @salesforce/plugins-data
+    default: ''
+    type: string
 workflows:
+  version: 2
   test-and-release:
     when: << pipeline.parameters.run-auto-workflows >>
     jobs:
@@ -67,15 +61,14 @@ workflows:
               - os: windows
                 node_version: maintenance
       - release-management/test-nut:
-          matrix:
-            parameters:
-              os:
-                - linux
-                - windows
-              sfdx_version:
-                - latest
-              node_version:
-                - latest
+          name: nuts-on-linux
+          sfdx_version: latest
+          requires:
+            - release-management/test-package
+      - release-management/test-nut:
+          name: nuts-on-windows
+          sfdx_version: latest
+          os: windows
           requires:
             - release-management/test-package
       - release-management/release-package:
@@ -86,11 +79,40 @@ workflows:
           filters:
             branches:
               only: main
+          context:
+            - CLI_CTC
+            - AWS
   test-ts-update:
-    when: << pipeline.parameters.run-test-ts-update >>
+    triggers:
+      - schedule:
+          cron: 0 0 * * *
+          filters:
+            branches:
+              only:
+                - main
     jobs:
       - release-management/test-ts-update
+  just-nuts:
+    when: << pipeline.parameters.run-just-nuts >>
+    jobs:
+      - release-management/test-nut:
+          name: just-nuts-<< matrix.os >>
+          sfdx_version: << pipeline.parameters.sfdx_version >>
+          sfdx_executable_path: sfdx
+          repo_tag: << pipeline.parameters.repo_tag >>
+          matrix:
+            parameters:
+              os:
+                - linux
+                - windows
+          npm_module_name: << pipeline.parameters.npm_module_name >>
   dependabot-automerge:
-    when: << pipeline.parameters.run-dependabot-automerge >>
+    triggers:
+      - schedule:
+          cron: '0 2,5,8,11 * * *'
+          filters:
+            branches:
+              only:
+                - main
     jobs:
       - release-management/dependabot-automerge
