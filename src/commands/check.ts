@@ -45,12 +45,12 @@ export default class Check extends ChangeCommand {
     const status = changeCase.Status;
 
     if (type === CHANGE_TYPE_ID) {
-      this.ux.log(`Release ${id} is standard pre-approved.`);
+      this.ux.log(`Change case ${id} is standard pre-approved.`);
     } else {
       if (status !== 'Approved, Scheduled') {
-        throw new SfdxError(`The release ${id} is set to "${status}" and not approved.`);
+        throw new SfdxError(`The change case ${id} is set to "${status} and not approved".`);
       }
-      this.ux.log(`Release ${id} is approved.`);
+      this.ux.log(`Change case ${id} is approved.`);
     }
     return { id, status, type };
   }
