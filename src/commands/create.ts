@@ -121,7 +121,7 @@ export default class Create extends ChangeCommand {
       }
       throw new SfdxError(
         `Starting release failed with ${startRes.results
-          .map((result) => result.errors.map((error) => error.message.message).join(','))
+          .map((result) => result.errors?.map((error) => error.message?.message).join(','))
           .join(',')}`
       );
     }
@@ -175,6 +175,8 @@ export default class Create extends ChangeCommand {
     const record: JsonMap = {};
 
     FIELD_TO_CLONE.forEach((field) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore index access on object
       record[field] = template[field] as string;
     });
 
