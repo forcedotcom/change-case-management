@@ -779,10 +779,10 @@
     typedoc-plugin-missing-exports "0.22.6"
     typescript "^4.1.3"
 
-"@salesforce/kit@^1.2.2", "@salesforce/kit@^1.4.3", "@salesforce/kit@^1.5.33":
-  version "1.5.33"
-  resolved "https://registry.yarnpkg.com/@salesforce/kit/-/kit-1.5.33.tgz#d3b947e23b2917778d03ea8bf6413892fe8ff332"
-  integrity sha512-CrrfalLDlr6dLyaON7HHu5GK+nwhz0Q3zYkBccMds20liRbGzozbUaX9uVZ6J1pDECaaPxtrZTpv1ljdKP2D6A==
+"@salesforce/kit@^1.2.2", "@salesforce/kit@^1.4.3", "@salesforce/kit@^1.5.44":
+  version "1.5.44"
+  resolved "https://registry.yarnpkg.com/@salesforce/kit/-/kit-1.5.44.tgz#f070257679f40750e67919020c7e8240b219bf26"
+  integrity sha512-QHwmJFgvF0YyBAvPkSMy2opyIgKzATF8lwYHewCr2obyqDiVi9OJkYWgQETkKTpfLzSjWqdsfiVAdlnRcj+xQQ==
   dependencies:
     "@salesforce/ts-types" "^1.5.20"
     shx "^0.3.3"
