@@ -10,9 +10,7 @@ import { Connection } from '@salesforce/core';
 describe('updateScheduledBuild', () => {
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => {
-      return Promise.resolve({});
-    })
+    .withConnectionRequest(() => Promise.resolve({}))
     .do(() => {
       $$.SANDBOX.stub(Connection.prototype, 'query').resolves({
         done: true,

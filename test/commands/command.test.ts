@@ -10,9 +10,7 @@ import { env } from '@salesforce/kit';
 describe('command option', () => {
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => {
-      return Promise.resolve({ success: true });
-    })
+    .withConnectionRequest(() => Promise.resolve({ success: true }))
     .do((ctx) => {
       ctx.bypass = env.getBoolean('SF_CHANGE_CASE_BYPASS');
       env.setBoolean('SF_CHANGE_CASE_BYPASS', true);

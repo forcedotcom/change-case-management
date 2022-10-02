@@ -11,15 +11,13 @@ describe('create', () => {
   test
     .env({ SF_CHANGE_CASE_CONFIGURATION_ITEM: 'NPM' })
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => {
-      return Promise.resolve({
+    .withConnectionRequest(() => Promise.resolve({
         RecordTypeId: '012B0000000EGnTIAW',
         // This is part of the create request. We should assert on the second call
         success: true,
         id: 'test',
         records: [],
-      });
-    })
+      }))
     .do(() => {
       $$.SANDBOX.stub(Connection.prototype, 'requestRaw').resolves({
         body: '{"id": "00X123456", "implementationSteps": [{"Id": "123"}], "results": [{"id": "123"}]}',

@@ -10,9 +10,7 @@ import { Connection } from '@salesforce/core';
 describe('close', () => {
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => {
-      return Promise.resolve({ success: true, records: [] });
-    })
+    .withConnectionRequest(() => Promise.resolve({ success: true, records: [] }))
     .do(() => {
       // $$.SANDBOX.stub(ConfigFile.prototype, 'unlink').callsFake(() => Promise.resolve());
       // $$.setConfigStubContents('ChangeConfig', { contents: { implementationSteps: [{ Id: '12345678' }] } });

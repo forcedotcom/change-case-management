@@ -9,9 +9,7 @@ import { expect, test } from '@salesforce/command/lib/test';
 describe('check', () => {
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => {
-      return Promise.resolve({ Status: 'Approved, Scheduled' });
-    })
+    .withConnectionRequest(() => Promise.resolve({ Status: 'Approved, Scheduled' }))
     .stdout()
     .command(['check', '--targetusername', 'test@org.com', '-i', '00X123456789123'])
     .it('runs check --targetusername test@org.com -i 00x1234567889123', (ctx) => {
@@ -20,11 +18,9 @@ describe('check', () => {
 
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => {
-      return Promise.resolve({
+    .withConnectionRequest(() => Promise.resolve({
         records: [{ Id: 'test', Status: 'Approved, Scheduled' }],
-      });
-    })
+      }))
     .stdout()
     .command([
       'check',

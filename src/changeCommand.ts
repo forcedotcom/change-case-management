@@ -136,7 +136,7 @@ export abstract class ChangeCommand extends SfdxCommand {
 
     if (this.flags.changecaseid) {
       this.logger.debug('Using change case ID.');
-      return await CASE.retrieve(this.flags.changecaseid);
+      return CASE.retrieve(this.flags.changecaseid);
     } else {
       const release = this.flags.release as string;
       const location = this.flags.location as string;
