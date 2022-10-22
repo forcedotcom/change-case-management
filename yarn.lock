@@ -575,10 +575,10 @@
     is-wsl "^2.1.1"
     tslib "^2.3.1"
 
-"@oclif/core@^1.14.1", "@oclif/core@^1.16.4":
-  version "1.16.5"
-  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-1.16.5.tgz#248c3371b615462a6ee6826a3c316bdc54dc5193"
-  integrity sha512-Jb58K79AALkLmY0PNU1Jx4Z+/JIWtpgtRbei92PIIBx+TaAmYgVySNI1beInZFNOpGo2fhxVBp+yr3DZ38z3kQ==
+"@oclif/core@^1.18.0":
+  version "1.19.1"
+  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-1.19.1.tgz#6dba92cfb7f1412e43068db3e9716215786f85a3"
+  integrity sha512-+LtMYQNzfLoYUcBTsWSFQ/4mqiA70XRU6tP+lDNmQQTrB5FHzDoBbyYvdjvMeS42izg78gjlN++rLUaAUCloNw==
   dependencies:
     "@oclif/linewrap" "^1.0.0"
     "@oclif/screen" "^3.0.2"
@@ -723,13 +723,6 @@
     widest-line "^2.0.1"
     wrap-ansi "^4.0.0"
 
-"@oclif/plugin-help@^5.1.11":
-  version "5.1.14"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-5.1.14.tgz#641e6f2c7effb4a21573d50c649af662a919bcf9"
-  integrity sha512-jhpD0a2bEp3YW93sQcUM3b15DH+svQqC9pMXNp1m1VyAPoskdaELgt5P/5SjmNuFwqws8scxpbYKlr2/lvvkGQ==
-  dependencies:
-    "@oclif/core" "^1.16.4"
-
 "@oclif/screen@^1.0.3", "@oclif/screen@^1.0.4":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@oclif/screen/-/screen-1.0.4.tgz#b740f68609dfae8aa71c3a6cab15d816407ba493"
@@ -747,12 +740,12 @@
   dependencies:
     fancy-test "^1.4.3"
 
-"@oclif/test@^2.1.0":
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/@oclif/test/-/test-2.2.2.tgz#1dc0992b85b6e6bf8f463758f410994866a572fa"
-  integrity sha512-gzVB+sstU45NHHjaMws3+/VjQmmO4VbDr1AcUg+/IzjMIwEvM6ssYD/d1kNPup0OjIgQqRQgGyVxKJX/vqHMtg==
+"@oclif/test@^2.2.0":
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/@oclif/test/-/test-2.2.4.tgz#30c29cb4a0cd370e8d95280fe40097473edbd884"
+  integrity sha512-bLaapIKHWyeuWCbD64uUCJCH+OJHFlEi6u/3sRPgi00kEyP95mM23IvkggDWEzQNh92IFj1xx5Bg8qnp0E2tjw==
   dependencies:
-    "@oclif/core" "^1.16.4"
+    "@oclif/core" "^1.18.0"
     fancy-test "^2.0.4"
 
 "@salesforce/bunyan@^2.0.0":
@@ -783,15 +776,14 @@
     chalk "^2.4.2"
     cli-ux "^4.9.3"
 
-"@salesforce/command@^5.2.11":
-  version "5.2.11"
-  resolved "https://registry.yarnpkg.com/@salesforce/command/-/command-5.2.11.tgz#43fdb687c8cd6a5f76dafd548ea176663c8a6620"
-  integrity sha512-6KhXbxlV+noVFL8FNhVBPDiD5Z4fEcezh1rClcjdturt2Zg/cp9KPIFqZoFn34zt30u+DlhhU3GDlfE18IoNHw==
+"@salesforce/command@^5.2.12":
+  version "5.2.13"
+  resolved "https://registry.yarnpkg.com/@salesforce/command/-/command-5.2.13.tgz#9bd019bc997a9619977362a7348af1b65b1800c0"
+  integrity sha512-+7+ZWjB3kQqJtcJpqiSrhW8mclgEmy+d26kDch0YUCxhUvoWQjCk23D4jDkZrFPJrv7sudeQXLSosqEIGppF3w==
   dependencies:
-    "@oclif/core" "^1.14.1"
-    "@oclif/plugin-help" "^5.1.11"
-    "@oclif/test" "^2.1.0"
-    "@salesforce/core" "^3.30.9"
+    "@oclif/core" "^1.18.0"
+    "@oclif/test" "^2.2.0"
+    "@salesforce/core" "^3.31.9"
     "@salesforce/kit" "^1.6.1"
     "@salesforce/ts-types" "^1.5.21"
     chalk "^2.4.2"
@@ -816,10 +808,10 @@
     mkdirp "1.0.4"
     sfdx-faye "^1.0.9"
 
-"@salesforce/core@^3.30.12", "@salesforce/core@^3.30.9":
-  version "3.31.10"
-  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-3.31.10.tgz#8ad004c0e3559a50d5dee3aa71e03bb57686c190"
-  integrity sha512-ie05IaLVcM8jhRjCh3sVUBcEtTb2dC0FWUTIXaGKHRSqdJPRuTKE+Uwbp7RYb4Wywjiunf8+721msYOwAO4QbA==
+"@salesforce/core@^3.31.10", "@salesforce/core@^3.31.9":
+  version "3.31.16"
+  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-3.31.16.tgz#af52b01eda974b8f000c81d7111e299db64ee38c"
+  integrity sha512-at5J9chWR0RQxymQTNiyoNxsVJ56Opq79F7FIKt7Y0T/o+OkdOCnveny2tcVEFeJz4OjRV9+57R9eCsn0gg3gQ==
   dependencies:
     "@salesforce/bunyan" "^2.0.0"
     "@salesforce/kit" "^1.7.0"
@@ -893,13 +885,13 @@
     shx "^0.3.3"
     tslib "^2.2.0"
 
-"@salesforce/plugin-command-reference@^1.4.4":
-  version "1.4.4"
-  resolved "https://registry.yarnpkg.com/@salesforce/plugin-command-reference/-/plugin-command-reference-1.4.4.tgz#3eb7dcdfab6ce8f76c33288bfc2e1ab367a58337"
-  integrity sha512-PjLhN8UulLTGfWJY7koTerZU7Azi1PQ3ne0gLLouWJdysbBh4Vxzzg0qVaGjbl4icdlWO1Ltle4txA1N1rKQbg==
+"@salesforce/plugin-command-reference@^1.4.6":
+  version "1.4.6"
+  resolved "https://registry.yarnpkg.com/@salesforce/plugin-command-reference/-/plugin-command-reference-1.4.6.tgz#70a5685d48168056b37b0b6b1b318bd67d990168"
+  integrity sha512-fnqAD1posUjy6J+uY8AXfa+Fg5CcDkfrVWtHrlNYCpYX9l8Cgt1DQ/2hggoGxK7OPtsmtXmUs2Lo+Q7c7+N4iw==
   dependencies:
-    "@salesforce/command" "^5.2.11"
-    "@salesforce/core" "^3.30.12"
+    "@salesforce/command" "^5.2.12"
+    "@salesforce/core" "^3.31.10"
     "@types/lodash.uniqby" "^4.7.7"
     chalk "^3.0.0"
     handlebars "4.7.7"
