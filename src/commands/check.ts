@@ -7,58 +7,57 @@
 
 import { Messages, SfdxError } from '@salesforce/core';
 import { env } from '@salesforce/kit';
-import { AnyJson } from '@salesforce/ts-types';
-import { ChangeCommand } from '../changeCommand';
+import { SfCommand, Ux } from '@salesforce/sf-plugins-core';
+import { retrieveCaseFromIdOrRelease } from '../changeCaseApi';
+import { changeCaseIdFlag, environmentAwareOrgFlag, locationFlag, releaseFlag } from '../flags';
+import { getEnvVarFullName } from '../functions';
 
-// Initialize Messages with the current plugin directory
 Messages.importMessagesDirectory(__dirname);
 
-// Load the specific messages for this file. Messages from @salesforce/command, @salesforce/core,
-// or any library that is using the messages framework can also be loaded this way.
 const messages = Messages.loadMessages('@salesforce/change-case-management', 'changecase');
 
 // ID for Standard Pre Approved
-const CHANGE_TYPE_ID = env.getString(ChangeCommand.getEnvVarFullName('CHANGE_TYPE_ID'), 'a8hB00000004DIzIAM');
+const CHANGE_TYPE_ID = env.getString(getEnvVarFullName('CHANGE_TYPE_ID'), 'a8hB00000004DIzIAM');
 
-export default class Check extends ChangeCommand {
-  public static description = messages.getMessage('check.description');
-
-  public static examples = [];
-
-  protected static flagsConfig = {
-    changecaseid: ChangeCommand.globalFlags.changecaseid(),
-    release: ChangeCommand.globalFlags.release({
-      dependsOn: ['location'],
-    }),
-    location: ChangeCommand.globalFlags.location({
-      dependsOn: ['release'],
-    }),
-    bypass: ChangeCommand.globalFlags.bypass,
-    dryrun: ChangeCommand.globalFlags.dryrun,
+export type CheckResult = {
+  id: string;
+  status: string;
+  type: string;
+};
+export default class Check extends SfCommand<CheckResult> {
+  public static readonly summary = messages.getMessage('check.description');
+  public static readonly examples = [];
+  public static readonly flags = {
+    'target-org': environmentAwareOrgFlag({ required: true }),
+    'change-case-id': changeCaseIdFlag,
+    release: releaseFlag,
+    location: locationFlag,
   };
 
-  public async run(): Promise<AnyJson> {
-    const changeCase = await this.retrieveCaseFromIdOrRelease();
+  public async run(): Promise<CheckResult> {
+    const { flags } = await this.parse(Check);
+    const conn = flags['target-org'].getConnection();
+    const ux = new Ux({ jsonEnabled: this.jsonEnabled() });
+    const changeCase = await retrieveCaseFromIdOrRelease({
+      conn,
+      ux,
+      ...(flags['change-case-id']
+        ? { changeCaseId: flags['change-case-id'] }
+        : { release: flags.release as string, location: flags.location?.toString() as string }),
+    });
 
     const id = changeCase.Id;
     const type = changeCase.SM_ChangeType__c;
     const status = changeCase.Status;
 
     if (type === CHANGE_TYPE_ID) {
-      this.ux.log(`Change case ${id} is standard pre-approved.`);
+      this.log(`Change case ${id} is standard pre-approved.`);
     } else {
       if (status !== 'Approved, Scheduled') {
         throw new SfdxError(`The change case ${id} is set to "${status} and not approved".`);
       }
-      this.ux.log(`Change case ${id} is approved.`);
+      this.log(`Change case ${id} is approved.`);
     }
     return { id, status, type };
-  }
-
-  protected async dryrunInformation(): Promise<void> {
-    const changeCase = await this.retrieveCaseFromIdOrRelease();
-
-    const id = changeCase.Id;
-    this.log(`The status of ${id} is ${changeCase.Status}.`);
   }
 }
