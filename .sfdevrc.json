@@ -1,0 +1,9 @@
+{
+  "wireit": {
+    "test:command-reference": {
+      "command": "echo \"We don't do docs for this command\"",
+      "files": ["src/**/*.ts", "messages/**"],
+      "output": ["tmp/root"]
+    }
+  }
+}
