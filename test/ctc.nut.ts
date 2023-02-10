@@ -22,10 +22,10 @@ describe('e2e', () => {
   let session: TestSession;
 
   before(async () => {
-    ensureString(env.getString('SF_CHANGE_CASE_SFDX_AUTH_URL'));
-    ensureString(env.getString('SF_CHANGE_CASE_TEMPLATE_ID'));
-    ensureString(env.getString('SF_CHANGE_CASE_CONFIGURATION_ITEM'));
-    ensureString(env.getString('TESTKIT_AUTH_URL'));
+    ensureString(env.getString('SF_CHANGE_CASE_SFDX_AUTH_URL'), 'missing: SF_CHANGE_CASE_SFDX_AUTH_URL');
+    ensureString(env.getString('SF_CHANGE_CASE_TEMPLATE_ID'), 'missing: SF_CHANGE_CASE_TEMPLATE_ID');
+    ensureString(env.getString('SF_CHANGE_CASE_CONFIGURATION_ITEM'), 'missing: SF_CHANGE_CASE_CONFIGURATION_ITEM');
+    ensureString(env.getString('TESTKIT_AUTH_URL'), 'missing: TESTKIT_AUTH_URL');
     // the NUT uses both regular auth and CTC's special "auth-via-env" and they need to be the same org (GUS)
     expect(env.getString('SF_CHANGE_CASE_SFDX_AUTH_URL')).to.equal(env.getString('TESTKIT_AUTH_URL'));
     session = await TestSession.create({
