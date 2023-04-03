@@ -14,7 +14,7 @@ jobs:
     concurrency:
       group: ${{ github.repository }}
     needs: linux-unit-tests
-    uses: salesforcecli/github-workflows/.github/workflows/nut.yml@sm/parameterized-nut-secrets
+    uses: salesforcecli/github-workflows/.github/workflows/nut.yml@main
     secrets:
       SF_CHANGE_CASE_SFDX_AUTH_URL: ${{ secrets.SF_CHANGE_CASE_SFDX_AUTH_URL }}
       TESTKIT_AUTH_URL: ${{ secrets.TESTKIT_AUTH_URL }}
