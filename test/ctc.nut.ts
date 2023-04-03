@@ -32,6 +32,7 @@ describe('e2e', () => {
       devhubAuthStrategy: 'AUTH_URL',
       project: {},
     });
+    assert(session.hubOrg.username, 'session huborg has no username');
   });
 
   after(async () => {
