@@ -7,7 +7,6 @@ on:
 jobs:
   yarn-lockfile-check:
     uses: salesforcecli/github-workflows/.github/workflows/lockFileCheck.yml@main
-  # Since the Windows unit tests take much longer, we run the linux unit tests first and then run the windows unit tests in parallel with NUTs
   linux-unit-tests:
     needs: yarn-lockfile-check
     uses: salesforcecli/github-workflows/.github/workflows/unitTestsLinux.yml@main
@@ -15,10 +14,12 @@ jobs:
     concurrency:
       group: ${{ github.repository }}
     needs: linux-unit-tests
-    uses: salesforcecli/github-workflows/.github/workflows/nut.yml@main
-    secrets: inherit
+    uses: salesforcecli/github-workflows/.github/workflows/nut.yml@sm/parameterized-nut-secrets
+    secrets:
+      SF_CHANGE_CASE_SFDX_AUTH_URL: ${{ secrets.SF_CHANGE_CASE_SFDX_AUTH_URL }}
     strategy:
       matrix:
+        # these are never meant to run on windows
         os: [ubuntu-latest]
       fail-fast: false
     with:
