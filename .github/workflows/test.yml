@@ -22,4 +22,5 @@ jobs:
       SF_CHANGE_CASE_CONFIGURATION_ITEM: ${{ secrets.SF_CHANGE_CASE_CONFIGURATION_ITEM }}
     with:
       # these are never meant to run on windows
-      os: ubuntu-latest
+      # only static-ip runners can talk to the org
+      os: static-ip-ubuntu-runners

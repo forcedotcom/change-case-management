@@ -43,7 +43,7 @@ describe('e2e', () => {
     it('query for an existing change case to use as a target', async () => {
       const conn = await Connection.create({
         authInfo: await AuthInfo.create({
-          username: session.hubOrg.username as string,
+          username: session.hubOrg.username,
         }),
       });
       const query =
