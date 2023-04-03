@@ -17,10 +17,9 @@ jobs:
     uses: salesforcecli/github-workflows/.github/workflows/nut.yml@sm/parameterized-nut-secrets
     secrets:
       SF_CHANGE_CASE_SFDX_AUTH_URL: ${{ secrets.SF_CHANGE_CASE_SFDX_AUTH_URL }}
-    strategy:
-      matrix:
-        # these are never meant to run on windows
-        os: [ubuntu-latest]
-      fail-fast: false
+      TESTKIT_AUTH_URL: ${{ secrets.TESTKIT_AUTH_URL }}
+      SF_CHANGE_CASE_TEMPLATE_ID: ${{ secrets.SF_CHANGE_CASE_TEMPLATE_ID }}
+      SF_CHANGE_CASE_CONFIGURATION_ITEM: ${{ secrets.SF_CHANGE_CASE_CONFIGURATION_ITEM }}
     with:
-      os: ${{ matrix.os }}
+      # these are never meant to run on windows
+      os: ubuntu-latest
