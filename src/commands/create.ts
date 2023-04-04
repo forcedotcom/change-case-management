@@ -8,7 +8,7 @@
 import { Flags, SfCommand, Ux } from '@salesforce/sf-plugins-core';
 import { Connection, Messages, SfError } from '@salesforce/core';
 import { env } from '@salesforce/kit';
-import { AnyJson, JsonMap } from '@salesforce/ts-types';
+import { JsonMap } from '@salesforce/ts-types';
 import { Interfaces } from '@oclif/core';
 import { Step, StartApiResponse, CreateCaseResponse, Implementation, CaseWithImpl, Case } from '../types';
 import { getEnvVarFullName } from '../functions';
@@ -58,7 +58,7 @@ export type CreateResponse = {
   id: string;
   record: CaseWithImpl;
 };
-export default class Create extends SfCommand<AnyJson> {
+export default class Create extends SfCommand<CreateResponse> {
   public static readonly summary = messages.getMessage('create.description');
   public static readonly description = messages.getMessage('create.description');
 
@@ -91,7 +91,7 @@ export default class Create extends SfCommand<AnyJson> {
 
   private flags!: Interfaces.InferredFlags<typeof Create.flags>;
 
-  public async run(): Promise<AnyJson> {
+  public async run(): Promise<CreateResponse> {
     const { flags } = await this.parse(Create);
     this.flags = flags;
 
