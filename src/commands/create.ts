@@ -5,29 +5,23 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags } from '@salesforce/command';
-import { Connection, Messages, SfdxError } from '@salesforce/core';
+import { Flags, SfCommand, Ux } from '@salesforce/sf-plugins-core';
+import { Connection, Messages, SfError } from '@salesforce/core';
 import { env } from '@salesforce/kit';
-import { AnyJson, JsonMap } from '@salesforce/ts-types';
-import { Case } from '../case';
-import { CaseWithImpl } from '../caseWithImpl';
-import { ChangeCommand } from '../changeCommand';
-import { Implementation } from '../implementation';
-import { Step, StartApiResponse, CreateCaseResponse } from '../types';
+import { JsonMap } from '@salesforce/ts-types';
+import { Interfaces } from '@oclif/core';
+import { Step, StartApiResponse, CreateCaseResponse, Implementation, CaseWithImpl, Case } from '../types';
+import { getEnvVarFullName } from '../functions';
+import { dryrunFlag, environmentAwareOrgFlag, locationFlag, releaseFlag } from '../flags';
+import { parseErrors, retrieveOrCreateReleaseId } from '../changeCaseApi';
 
-// Initialize Messages with the current plugin directory
 Messages.importMessagesDirectory(__dirname);
 
-// Load the specific messages for this file. Messages from @salesforce/command, @salesforce/core,
-// or any library that is using the messages framework can also be loaded this way.
 const messages = Messages.loadMessages('@salesforce/change-case-management', 'changecase');
 
-const CHANGE_RECORD_TYPE_ID = env.getString(
-  ChangeCommand.getEnvVarFullName('CHANGE_RECORD_TYPE_ID'),
-  '012B000000009fBIAQ'
-);
+const CHANGE_RECORD_TYPE_ID = env.getString(getEnvVarFullName('CHANGE_RECORD_TYPE_ID'), '012B000000009fBIAQ');
 const CHANGE_TEMPLATE_RECORD_TYPE_ID = env.getString(
-  ChangeCommand.getEnvVarFullName('CHANGE_TEMPLATE_RECORD_TYPE_ID'),
+  getEnvVarFullName('CHANGE_TEMPLATE_RECORD_TYPE_ID'),
   '012B0000000EGnTIAW'
 );
 
@@ -60,114 +54,117 @@ const FIELD_TO_CLONE = [
   'If_Not_Tested_please_explain__c',
 ];
 
-export default class Create extends ChangeCommand {
-  public static description = messages.getMessage('create.description');
+export type CreateResponse = {
+  id: string;
+  record: CaseWithImpl;
+};
+export default class Create extends SfCommand<CreateResponse> {
+  public static readonly summary = messages.getMessage('create.description');
+  public static readonly description = messages.getMessage('create.description');
 
-  public static examples = [];
+  public static readonly examples = [];
 
-  protected static flagsConfig = {
-    templateid: flags.id({
-      description: messages.getMessage('create.flags.templateid.description'),
+  public static readonly flags = {
+    'target-org': environmentAwareOrgFlag({ required: true }),
+    'template-id': Flags.salesforceId({
+      length: 'both',
+      summary: messages.getMessage('create.flags.templateid.description'),
       char: 'i',
       required: true,
-      env: ChangeCommand.getEnvVarFullName('TEMPLATE_ID'),
+      startsWith: '500',
+      env: getEnvVarFullName('TEMPLATE_ID'),
+      aliases: ['templateid'],
+      deprecateAliases: true,
     }),
-    release: ChangeCommand.globalFlags.release({
-      required: true,
-    }),
-    location: ChangeCommand.globalFlags.location(),
-    configurationitem: flags.string({
-      description: messages.getMessage('create.flags.configurationitem.description'),
+    release: releaseFlag,
+    location: locationFlag,
+    'configuration-item': Flags.string({
+      summary: messages.getMessage('create.flags.configurationitem.description'),
       required: true,
       char: 'c',
-      env: ChangeCommand.getEnvVarFullName('CONFIGURATION_ITEM'),
+      env: getEnvVarFullName('CONFIGURATION_ITEM'),
+      aliases: ['configurationitem'],
+      deprecateAliases: true,
     }),
-    bypass: ChangeCommand.globalFlags.bypass,
-    dryrun: ChangeCommand.globalFlags.dryrun,
+    'dry-run': dryrunFlag,
   };
 
-  public async run(): Promise<AnyJson> {
-    const conn = this.org.getConnection();
-    const record = await this.prepareRecordToCreate();
+  private flags!: Interfaces.InferredFlags<typeof Create.flags>;
 
-    const createRes = await this.createCase(record, conn);
-    await this.startImplementations(createRes, conn);
+  public async run(): Promise<CreateResponse> {
+    const { flags } = await this.parse(Create);
+    this.flags = flags;
 
-    return { id: createRes.id, record };
-  }
+    const conn = flags['target-org'].getConnection();
+    const record = await this.prepareRecordToCreate(conn);
 
-  protected async dryrunInformation(): Promise<void> {
-    const record = await this.prepareRecordToCreate();
-    this.ux.styledHeader('Record to Create');
-    this.ux.logJson(record);
+    if (flags['dry-run']) {
+      this.log('This case would be created if you had not used the --dryrun flag:');
+      this.styledJSON(record);
+      return { id: 'NOT PRESENT BECAUSE DRY RUN', record };
+    } else {
+      const createRes = await this.createCase(record, conn);
+      await this.startImplementations(createRes, conn);
+      return { id: createRes.id, record };
+    }
   }
 
   private async startImplementations(createRes: CreateCaseResponse, conn: Connection): Promise<Step[]> {
-    const implementationsToStart = this.generateImplementations(createRes.implementationSteps);
+    const implementationsToStart = generateImplementations(createRes.implementationSteps);
 
     // start the implementation steps
-    const startResult = await conn.requestRaw({
-      method: 'PATCH',
-      url: conn.instanceUrl + '/services/apexrest/change-management/v1/implementation-steps/start',
-      body: JSON.stringify(implementationsToStart),
-    });
+    const startResult = await conn.request<StartApiResponse>(
+      {
+        method: 'PATCH',
+        url: '/services/apexrest/change-management/v1/implementation-steps/start',
+        body: JSON.stringify(implementationsToStart),
+      },
+      { responseType: 'application/json' }
+    );
 
-    const startRes = (JSON.parse(startResult.body as string) as unknown) as StartApiResponse;
-    this.ux.log(`implementation step id: ${startRes.results[0].id}`);
-
-    if (startRes.hasErrors) {
-      if (!this.flags.json) {
-        this.ux.logJson(startRes);
-      }
-      throw new SfdxError(
-        `Starting release failed with ${startRes.results
-          .map((result) => result.errors?.map((error) => error.message?.message).join(','))
-          .join(',')}`
-      );
+    if (startResult.hasErrors === false) {
+      startResult.results.forEach((result, index) => {
+        this.log(`implementation step ${index} ... id: ${result.id}`);
+      });
+      return implementationsToStart.implementationSteps;
     }
+    this.styledJSON(startResult);
 
-    return implementationsToStart.implementationSteps;
+    throw new SfError(
+      `Starting release failed with ${startResult.results
+        .map((result) => result.errors?.map((error) => error.message?.message).join(','))
+        .join(',')}`
+    );
   }
 
   private async createCase(record: CaseWithImpl, conn: Connection): Promise<CreateCaseResponse> {
     // create the case with implementation steps
-    const createResult = await conn.requestRaw({
-      method: 'POST',
-      url: conn.instanceUrl + '/services/apexrest/change-management/v1/change-cases',
-      body: JSON.stringify(record),
-    });
-
-    const createRes = (JSON.parse(createResult.body as string) as unknown) as CreateCaseResponse;
-
-    if (createRes.success === false) {
-      throw new SfdxError(`Creating release failed with ${this.parseErrors(createRes)}`);
-    } else {
-      this.ux.log(
-        `Release ${createRes.id} created. Check https://gus.lightning.force.com/lightning/r/Case/${createRes.id}/view`
+    const createResult = await conn.request<CreateCaseResponse>(
+      {
+        method: 'POST',
+        url: conn.instanceUrl + '/services/apexrest/change-management/v1/change-cases',
+        body: JSON.stringify(record),
+      },
+      { responseType: 'application/json' }
+    );
+    if (createResult.success) {
+      this.log(
+        `Release ${createResult.id} created. Check https://gus.lightning.force.com/lightning/r/Case/${createResult.id}/view`
       );
+      return createResult;
     }
-
-    return createRes;
+    throw new SfError(`Creating release failed with ${parseErrors(createResult)}`);
   }
 
-  private generateImplementations(steps: string[] = []): { implementationSteps: Step[] } {
-    return {
-      implementationSteps: steps.map((step) => ({
-        Id: step,
-      })),
-    };
-  }
+  private async prepareRecordToCreate(conn: Connection): Promise<CaseWithImpl> {
+    const id = this.flags['template-id'];
 
-  private async prepareRecordToCreate(): Promise<CaseWithImpl> {
-    const id = this.flags.templateid as string;
-
-    const conn = this.org.getConnection();
-    const CASE = conn.sobject<Case>('Case');
+    const CASE = conn.sobject<'Case'>('Case');
 
     const template = await CASE.retrieve(id);
 
-    if (template.RecordTypeId !== CHANGE_TEMPLATE_RECORD_TYPE_ID) {
-      throw new SfdxError(
+    if (typeof template.RecordTypeId === 'string' && template.RecordTypeId !== CHANGE_TEMPLATE_RECORD_TYPE_ID) {
+      throw new SfError(
         `A valid change case template must be supplied. Found ${template.RecordTypeId} but expecting ${CHANGE_TEMPLATE_RECORD_TYPE_ID} `
       );
     }
@@ -181,8 +178,13 @@ export default class Create extends ChangeCommand {
     });
 
     record.RecordTypeId = CHANGE_RECORD_TYPE_ID;
-    record.SM_Source_Control_Location__c = (this.flags.location as string) || template.SM_Source_Control_Location__c;
-    record.SM_Release__c = await this.retrieveOrCreateReleaseId(this.flags.release);
+    record.SM_Source_Control_Location__c =
+      this.flags.location?.toString() ?? (template.SM_Source_Control_Location__c as string);
+    record.SM_Release__c = await retrieveOrCreateReleaseId(
+      conn,
+      new Ux({ jsonEnabled: this.jsonEnabled() }),
+      this.flags.release as string
+    );
     record.Status = 'Approved, Scheduled';
     record.SM_Risk_Level__c = 'Low';
 
@@ -201,10 +203,16 @@ export default class Create extends ChangeCommand {
           SM_Estimated_Start_Time__c: startTime.toISOString(),
           SM_Estimated_End_Time__c: endTime.toISOString(),
           SM_Implementation_Steps__c: 'N/A',
-          Configuration_Item_Path_List__c: this.flags.configurationitem as string,
+          Configuration_Item_Path_List__c: this.flags['configuration-item'],
           SM_Infrastructure_Type__c: 'Off Core',
         } as Implementation,
       ],
     } as CaseWithImpl;
   }
 }
+
+const generateImplementations = (steps: string[] = []): { implementationSteps: Step[] } => ({
+  implementationSteps: steps.map((step) => ({
+    Id: step,
+  })),
+});

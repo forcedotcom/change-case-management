@@ -29,8 +29,12 @@ docs
 *.tgz
 *.sig
 package.json.bak.
+.sfdx
 
 # -- CLEAN ALL
+*.tsbuildinfo
+.eslintcache
+.wireit
 node_modules
 
 # --

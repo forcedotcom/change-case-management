@@ -2,53 +2,19 @@
   {
     "command": "check",
     "plugin": "@salesforce/change-case-management",
-    "flags": [
-      "apiversion",
-      "bypass",
-      "changecaseid",
-      "dryrun",
-      "json",
-      "location",
-      "loglevel",
-      "release",
-      "targetusername"
-    ]
+    "flags": ["change-case-id", "json", "location", "release", "target-org"],
+    "alias": []
   },
   {
     "command": "close",
     "plugin": "@salesforce/change-case-management",
-    "flags": [
-      "apiversion",
-      "bypass",
-      "changecaseid",
-      "dryrun",
-      "json",
-      "location",
-      "loglevel",
-      "release",
-      "status",
-      "targetusername"
-    ]
+    "flags": ["change-case-id", "dry-run", "json", "location", "release", "status", "target-org"],
+    "alias": []
   },
   {
     "command": "create",
     "plugin": "@salesforce/change-case-management",
-    "flags": [
-      "apiversion",
-      "bypass",
-      "configurationitem",
-      "dryrun",
-      "json",
-      "location",
-      "loglevel",
-      "release",
-      "targetusername",
-      "templateid"
-    ]
-  },
-  {
-    "command": "updateScheduledBuild",
-    "plugin": "@salesforce/change-case-management",
-    "flags": ["apiversion", "bypass", "dryrun", "json", "loglevel", "targetusername", "workitemid", "scheduledbuild"]
+    "flags": ["configuration-item", "dry-run", "json", "location", "release", "target-org", "template-id"],
+    "alias": []
   }
 ]
