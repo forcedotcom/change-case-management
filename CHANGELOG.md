@@ -1,3 +1,12 @@
+## [2.1.1](https://github.com/forcedotcom/change-case-management/compare/2.1.0...2.1.1) (2023-05-17)
+
+
+### Bug Fixes
+
+* catch and throw ctc errors ([28f5270](https://github.com/forcedotcom/change-case-management/commit/28f5270316194442a3d91b248d65dc2e4de3ada2))
+
+
+
 # [2.1.0](https://github.com/forcedotcom/change-case-management/compare/1.5.7...2.1.0) (2023-04-04)
 
 
