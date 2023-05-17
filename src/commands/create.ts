@@ -139,21 +139,29 @@ export default class Create extends SfCommand<CreateResponse> {
 
   private async createCase(record: CaseWithImpl, conn: Connection): Promise<CreateCaseResponse> {
     // create the case with implementation steps
-    const createResult = await conn.request<CreateCaseResponse>(
-      {
-        method: 'POST',
-        url: conn.instanceUrl + '/services/apexrest/change-management/v1/change-cases',
-        body: JSON.stringify(record),
-      },
-      { responseType: 'application/json' }
-    );
-    if (createResult.success) {
-      this.log(
-        `Release ${createResult.id} created. Check https://gus.lightning.force.com/lightning/r/Case/${createResult.id}/view`
+    try {
+      const createResult = await conn.request<CreateCaseResponse>(
+        {
+          method: 'POST',
+          url: conn.instanceUrl + '/services/apexrest/change-management/v1/change-cases',
+          body: JSON.stringify(record),
+        },
+        { responseType: 'application/json' }
       );
-      return createResult;
+
+      if (createResult.success) {
+        this.log(
+          `Release ${createResult.id} created. Check https://gus.lightning.force.com/lightning/r/Case/${createResult.id}/view`
+        );
+        return createResult;
+      }
+
+      throw new SfError(`Creating release failed with ${parseErrors(createResult)}`);
+    } catch (e) {
+      const err = e as Error;
+      const error = JSON.parse(err.message) as CreateCaseResponse;
+      throw new SfError(`Creating release failed with ${parseErrors(error)}`);
     }
-    throw new SfError(`Creating release failed with ${parseErrors(createResult)}`);
   }
 
   private async prepareRecordToCreate(conn: Connection): Promise<CaseWithImpl> {

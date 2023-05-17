@@ -17,6 +17,7 @@ describe('flag validation', () => {
       assert.fail('Should have thrown an error');
     } catch (e) {
       assert(e instanceof Error);
+      // NOTE: This test will fail if you have a GUS auth url set your env (SF_CHANGE_CASE_SFDX_AUTH_URL)
       expect(e.name).to.equal('NoOrgError');
     }
   });
