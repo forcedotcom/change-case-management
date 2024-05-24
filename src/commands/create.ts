@@ -10,13 +10,12 @@ import { Connection, Messages, SfError } from '@salesforce/core';
 import { env } from '@salesforce/kit';
 import { JsonMap } from '@salesforce/ts-types';
 import { Interfaces } from '@oclif/core';
-import { Step, StartApiResponse, CreateCaseResponse, Implementation, CaseWithImpl, Case } from '../types';
-import { getEnvVarFullName } from '../functions';
-import { dryrunFlag, environmentAwareOrgFlag, locationFlag, releaseFlag } from '../flags';
-import { parseErrors, retrieveOrCreateReleaseId } from '../changeCaseApi';
+import { Step, StartApiResponse, CreateCaseResponse, Implementation, CaseWithImpl, Case } from '../types.js';
+import { getEnvVarFullName } from '../functions.js';
+import { dryrunFlag, environmentAwareOrgFlag, locationFlag, releaseFlag } from '../flags.js';
+import { parseErrors, retrieveOrCreateReleaseId } from '../changeCaseApi.js';
 
-Messages.importMessagesDirectory(__dirname);
-
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/change-case-management', 'changecase');
 
 const CHANGE_RECORD_TYPE_ID = env.getString(getEnvVarFullName('CHANGE_RECORD_TYPE_ID'), '012B000000009fBIAQ');

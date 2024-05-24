@@ -7,9 +7,9 @@
 import { env } from '@salesforce/kit';
 import { Flags } from '@salesforce/sf-plugins-core';
 import { AuthInfo, Connection, Messages, Org } from '@salesforce/core';
-import { getEnvVarFullName } from './functions';
+import { getEnvVarFullName } from './functions.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/change-case-management', 'changecase');
 
 async function maybeGetOrg(input: string): Promise<Org>;

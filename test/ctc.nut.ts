@@ -9,10 +9,10 @@ import { TestSession, execCmd } from '@salesforce/cli-plugins-testkit';
 import { AuthInfo, Connection } from '@salesforce/core';
 import { ensureString } from '@salesforce/ts-types';
 import { env } from '@salesforce/kit';
-import { Case } from '../src/types';
-import { CheckResult } from '../src/commands/check';
-import { CreateResponse } from '../src/commands/create';
-import { CloseResult } from '../src/commands/close';
+import { Case } from '../src/types.js';
+import { CheckResult } from '../src/commands/check.js';
+import { CreateResponse } from '../src/commands/create.js';
+import { CloseResult } from '../src/commands/close.js';
 
 const repoUrl = 'https://github.com/forcedotcom/change-case-management';
 

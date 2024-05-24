@@ -6,7 +6,7 @@
  */
 import { Connection, SfError } from '@salesforce/core';
 import { Ux } from '@salesforce/sf-plugins-core';
-import { Case, ChangeCaseApiResponse, CreateCaseResponse, Implementation } from './types';
+import { Case, ChangeCaseApiResponse, CreateCaseResponse, Implementation } from './types.js';
 
 const retrieveOrCreateBuildId = async (conn: Connection, ux: Ux, release: string): Promise<string> => {
   const buildResults = await conn.query<{ Id: string }>(`SELECT Id FROM ADM_Build__c WHERE Name = '${release}'`);

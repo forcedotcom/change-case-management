@@ -1,9 +1,9 @@
 {
-  "extends": "@salesforce/dev-config/tsconfig-strict",
+  "extends": "@salesforce/dev-config/tsconfig-strict-esm",
   "compilerOptions": {
     "outDir": "lib",
     "rootDir": "src",
     "skipLibCheck": true
   },
-  "include": ["./src/**/*.ts", "test/commands/failures.test.ts"]
+  "include": ["./src/**/*.ts"]
 }

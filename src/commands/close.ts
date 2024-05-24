@@ -6,15 +6,14 @@
  */
 
 import { Flags, SfCommand, Ux } from '@salesforce/sf-plugins-core';
-import { Connection, Messages, SfdxError } from '@salesforce/core';
+import { Connection, Messages, SfError } from '@salesforce/core';
 import { AnyJson } from '@salesforce/ts-types';
-import { parseErrors, retrieveCaseFromIdOrRelease, retrieveImplementationFromCase } from '../changeCaseApi';
-import { Implementation, ChangeCaseApiResponse, StartApiResponse } from '../types';
-import { getEnvVarFullName } from '../functions';
-import { changeCaseIdFlag, dryrunFlag, environmentAwareOrgFlag, locationFlag, releaseFlag } from '../flags';
+import { parseErrors, retrieveCaseFromIdOrRelease, retrieveImplementationFromCase } from '../changeCaseApi.js';
+import { Implementation, ChangeCaseApiResponse, StartApiResponse } from '../types.js';
+import { getEnvVarFullName } from '../functions.js';
+import { changeCaseIdFlag, dryrunFlag, environmentAwareOrgFlag, locationFlag, releaseFlag } from '../flags.js';
 
-Messages.importMessagesDirectory(__dirname);
-
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/change-case-management', 'changecase');
 
 export type CloseResult = {
@@ -89,7 +88,7 @@ export default class Close extends SfCommand<AnyJson> {
     );
 
     if (closeResult.results && closeResult.results[0].success === false) {
-      throw new SfdxError(`Stoping the implementation steps failed with ${parseErrors(closeResult)}`);
+      throw new SfError(`Stoping the implementation steps failed with ${parseErrors(closeResult)}`);
     }
 
     this.log(`Release ${closeResult.results[0].id} set to ${status}.`);
@@ -112,7 +111,7 @@ export default class Close extends SfCommand<AnyJson> {
     );
 
     if (stopResult.results && stopResult.results[0].success === false) {
-      throw new SfdxError(`Stoping the implementation steps failed with ${parseErrors(stopResult)}`);
+      throw new SfError(`Stoping the implementation steps failed with ${parseErrors(stopResult)}`);
     }
 
     this.log(`Successfully stopped implementation steps ${steps[0].Id}`);

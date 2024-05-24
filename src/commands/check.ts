@@ -5,15 +5,14 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Messages, SfdxError } from '@salesforce/core';
+import { Messages, SfError } from '@salesforce/core';
 import { env } from '@salesforce/kit';
 import { SfCommand, Ux } from '@salesforce/sf-plugins-core';
-import { retrieveCaseFromIdOrRelease } from '../changeCaseApi';
-import { changeCaseIdFlag, environmentAwareOrgFlag, locationFlag, releaseFlag } from '../flags';
-import { getEnvVarFullName } from '../functions';
+import { retrieveCaseFromIdOrRelease } from '../changeCaseApi.js';
+import { changeCaseIdFlag, environmentAwareOrgFlag, locationFlag, releaseFlag } from '../flags.js';
+import { getEnvVarFullName } from '../functions.js';
 
-Messages.importMessagesDirectory(__dirname);
-
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/change-case-management', 'changecase');
 
 // ID for Standard Pre Approved
@@ -54,7 +53,7 @@ export default class Check extends SfCommand<CheckResult> {
       this.log(`Change case ${id} is standard pre-approved.`);
     } else {
       if (status !== 'Approved, Scheduled') {
-        throw new SfdxError(`The change case ${id} is set to "${status} and not approved".`);
+        throw new SfError(`The change case ${id} is set to "${status} and not approved".`);
       }
       this.log(`Change case ${id} is approved.`);
     }
