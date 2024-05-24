@@ -1,20 +1,26 @@
 [
   {
+    "alias": [],
     "command": "check",
-    "plugin": "@salesforce/change-case-management",
-    "flags": ["change-case-id", "json", "location", "release", "target-org"],
-    "alias": []
+    "flagAliases": ["changecaseid", "targetusername", "u"],
+    "flagChars": ["i", "l", "o", "r"],
+    "flags": ["change-case-id", "flags-dir", "json", "location", "release", "target-org"],
+    "plugin": "@salesforce/change-case-management"
   },
   {
+    "alias": [],
     "command": "close",
-    "plugin": "@salesforce/change-case-management",
-    "flags": ["change-case-id", "dry-run", "json", "location", "release", "status", "target-org"],
-    "alias": []
+    "flagAliases": ["changecaseid", "dryrun", "targetusername", "u"],
+    "flagChars": ["i", "l", "o", "r", "s"],
+    "flags": ["change-case-id", "dry-run", "flags-dir", "json", "location", "release", "status", "target-org"],
+    "plugin": "@salesforce/change-case-management"
   },
   {
+    "alias": [],
     "command": "create",
-    "plugin": "@salesforce/change-case-management",
-    "flags": ["configuration-item", "dry-run", "json", "location", "release", "target-org", "template-id"],
-    "alias": []
+    "flagAliases": ["configurationitem", "dryrun", "targetusername", "templateid", "u"],
+    "flagChars": ["c", "i", "l", "o", "r"],
+    "flags": ["configuration-item", "dry-run", "flags-dir", "json", "location", "release", "target-org", "template-id"],
+    "plugin": "@salesforce/change-case-management"
   }
 ]

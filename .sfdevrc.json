@@ -4,6 +4,11 @@
       "command": "echo \"We don't do docs for this command\"",
       "files": ["src/**/*.ts", "messages/**"],
       "output": ["tmp/root"]
+    },
+    "link-check": {
+      "command": "echo \"We don't do link checks for this command\"",
+      "files": ["./*.md", "./!(CHANGELOG).md", "messages/**/*.md"],
+      "output": []
     }
   }
 }

@@ -6,7 +6,7 @@
  */
 import { Connection, SfError } from '@salesforce/core';
 import { Ux } from '@salesforce/sf-plugins-core';
-import { Case, ChangeCaseApiResponse, CreateCaseResponse, Implementation } from './types';
+import { Case, Implementation } from './types.js';
 
 const retrieveOrCreateBuildId = async (conn: Connection, ux: Ux, release: string): Promise<string> => {
   const buildResults = await conn.query<{ Id: string }>(`SELECT Id FROM ADM_Build__c WHERE Name = '${release}'`);
@@ -107,16 +107,5 @@ export const retrieveCaseFromIdOrRelease = async ({
       );
     }
     return cases[0];
-  }
-};
-
-export const parseErrors = (body: ChangeCaseApiResponse | CreateCaseResponse): string => {
-  if (body.errors) {
-    return body.errors.map((error) => error.message).join(',');
-  }
-  if (body.results?.length && typeof body.results[0].message === 'string') {
-    return body.results[0].message;
-  } else {
-    throw new SfError('Unexpected error response from change case API');
   }
 };
