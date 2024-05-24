@@ -140,7 +140,7 @@ export default class Create extends SfCommand<CreateResponse> {
       const createResult = await conn.request<CreateCaseResponse>(
         {
           method: 'POST',
-          url: conn.instanceUrl + '/services/apexrest/change-management/v2/change-cases',
+          url: '/services/apexrest/change-management/v2/change-cases',
           body: JSON.stringify(record),
         },
         { responseType: 'application/json' }
