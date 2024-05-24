@@ -1,6 +1,6 @@
 {
   "name": "@salesforce/change-case-management",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "bugs": "https://github.com/forcedotcom/change-case-management/issues",
   "bin": {
     "sfchangecase": "./bin/run.js"
