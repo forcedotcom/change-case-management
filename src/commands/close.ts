@@ -33,7 +33,6 @@ export default class Close extends SfCommand<AnyJson> {
     release: releaseFlag,
     location: locationFlag,
     status: Flags.string({
-      // eslint-disable-next-line sf-plugin/no-hardcoded-messages-flags
       summary: messages.getMessage('flags.status.summary'),
       char: 's',
       default: 'Implemented - per plan',
