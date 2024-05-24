@@ -13,7 +13,7 @@ import { changeCaseIdFlag, environmentAwareOrgFlag, locationFlag, releaseFlag } 
 import { getEnvVarFullName } from '../functions.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
-const messages = Messages.loadMessages('@salesforce/change-case-management', 'changecase');
+const messages = Messages.loadMessages('@salesforce/change-case-management', 'check');
 
 // ID for Standard Pre Approved
 const CHANGE_TYPE_ID = env.getString(getEnvVarFullName('CHANGE_TYPE_ID'), 'a8hB00000004DIzIAM');
@@ -24,7 +24,9 @@ export type CheckResult = {
   type: string;
 };
 export default class Check extends SfCommand<CheckResult> {
-  public static readonly summary = messages.getMessage('check.description');
+  public static readonly deprecated = true;
+  public static readonly hidden = true;
+  public static readonly summary = messages.getMessage('summary');
   public static readonly examples = [];
   public static readonly flags = {
     'target-org': environmentAwareOrgFlag({ required: true }),

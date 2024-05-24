@@ -8,13 +8,13 @@
 import { Flags, SfCommand, Ux } from '@salesforce/sf-plugins-core';
 import { Connection, Messages, SfError } from '@salesforce/core';
 import { AnyJson } from '@salesforce/ts-types';
-import { parseErrors, retrieveCaseFromIdOrRelease, retrieveImplementationFromCase } from '../changeCaseApi.js';
-import { Implementation, ChangeCaseApiResponse, StartApiResponse } from '../types.js';
+import { retrieveCaseFromIdOrRelease } from '../changeCaseApi.js';
+import { ChangeCaseCloseApiResponse } from '../types.js';
 import { getEnvVarFullName } from '../functions.js';
 import { changeCaseIdFlag, dryrunFlag, environmentAwareOrgFlag, locationFlag, releaseFlag } from '../flags.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
-const messages = Messages.loadMessages('@salesforce/change-case-management', 'changecase');
+const messages = Messages.loadMessages('@salesforce/change-case-management', 'close');
 
 export type CloseResult = {
   case: {
@@ -23,8 +23,7 @@ export type CloseResult = {
   };
 };
 export default class Close extends SfCommand<AnyJson> {
-  public static readonly summary = messages.getMessage('close.description');
-  public static readonly description = messages.getMessage('close.description');
+  public static readonly summary = messages.getMessage('summary');
 
   public static readonly examples = [];
 
@@ -34,7 +33,8 @@ export default class Close extends SfCommand<AnyJson> {
     release: releaseFlag,
     location: locationFlag,
     status: Flags.string({
-      summary: messages.getMessage('close.flags.status.summary'),
+      // eslint-disable-next-line sf-plugin/no-hardcoded-messages-flags
+      summary: messages.getMessage('flags.status.summary'),
       char: 's',
       default: 'Implemented - per plan',
       options: ['Implemented - per plan', 'Not Implemented', 'Rolled back - with no impact'],
@@ -58,62 +58,32 @@ export default class Close extends SfCommand<AnyJson> {
           })
         ).Id;
 
-    const implementationSteps = await retrieveImplementationFromCase(conn, changeCaseId);
-
     if (!flags['dry-run']) {
-      await this.stopImplementation(flags.status, implementationSteps, conn);
-      await this.closeCase(flags.status, changeCaseId, conn);
+      (await closeCase(flags.status, changeCaseId, conn)).map((msg) => this.log(msg));
     } else {
       this.log('Case will not be closed because of the dryrun flag.');
     }
 
-    // delete the config file, until the next release
-
     return { case: { Id: changeCaseId, Status: flags.status } };
   }
-
-  private async closeCase(status: string, changecaseid: string, conn: Connection): Promise<void> {
-    // close the case
-    const closeBody = {
-      cases: [{ Id: changecaseid }],
-    };
-
-    const closeResult = await conn.request<ChangeCaseApiResponse>(
-      {
-        method: 'PATCH',
-        url: '/services/apexrest/change-management/v1/change-cases/close',
-        body: JSON.stringify(closeBody),
-      },
-      { responseType: 'application/json' }
-    );
-
-    if (closeResult.results && closeResult.results[0].success === false) {
-      throw new SfError(`Stoping the implementation steps failed with ${parseErrors(closeResult)}`);
-    }
-
-    this.log(`Release ${closeResult.results[0].id} set to ${status}.`);
-  }
-
-  private async stopImplementation(status: string, steps: Implementation[], conn: Connection): Promise<void> {
-    // stop the implementation steps
-    // add the status to the implementation steps
-    const implementationsToStop = {
-      implementationSteps: steps.map((step) => ({ Id: step.Id, Status__c: status })),
-    };
-
-    const stopResult = await conn.request<StartApiResponse>(
-      {
-        method: 'PATCH',
-        url: '/services/apexrest/change-management/v1/implementation-steps/stop',
-        body: JSON.stringify(implementationsToStop),
-      },
-      { responseType: 'application/json' }
-    );
-
-    if (stopResult.results && stopResult.results[0].success === false) {
-      throw new SfError(`Stoping the implementation steps failed with ${parseErrors(stopResult)}`);
-    }
-
-    this.log(`Successfully stopped implementation steps ${steps[0].Id}`);
-  }
 }
+
+const closeCase = async (status: string, changecaseid: string, conn: Connection): Promise<string[]> => {
+  // close the case
+  const closeBody = { cases: [{ Id: changecaseid }] };
+
+  const closeResult = await conn.request<ChangeCaseCloseApiResponse>(
+    {
+      method: 'PATCH',
+      url: '/services/apexrest/change-management/v2/change-cases/close',
+      body: JSON.stringify(closeBody),
+    },
+    { responseType: 'application/json' }
+  );
+
+  if (closeResult.hasErrors) {
+    throw new SfError(`Stoping the implementation steps failed with ${JSON.stringify(closeResult)}`);
+  }
+
+  return closeResult.results.map((r) => `Release ${r.id} set to ${status}.`);
+};

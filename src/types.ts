@@ -9,12 +9,11 @@ export type Implementation = {
   Id?: string;
   Description__c: string;
   OwnerId: string;
-  SM_Estimated_Start_Time__c: string;
-  SM_Estimated_End_Time__c: string;
   Configuration_Item_Path_List__c: string;
   SM_Implementation_Steps__c: string;
-  SM_Change_Implementation_ID__c: string;
   SM_Infrastructure_Type__c: string;
+  Planned_Start_Time__c: string;
+  Planned_Duration_In_Hours__c: number;
 };
 
 export type CaseWithImpl = {
@@ -61,47 +60,81 @@ export type Step = {
   Id: string;
 };
 
-export type ChangeCaseApiResponse = {
-  results: [
+type SuccessResult = {
+  id: string;
+  success: true;
+};
+
+type CloseFailureResult = {
+  success: false;
+  errors: [
     {
-      id: string;
-      success: boolean;
-      message?: string;
+      message: string;
+      errorCode: string;
     }
   ];
-  errors?: [{ message: string }];
 };
+
+// https://confluence.internal.salesforce.com/display/PETOOLS/Change+API+V2
+export type ChangeCaseCloseApiResponse =
+  | { hasErrors: true; results: [CloseFailureResult | SuccessResult] }
+  | { hasErrors: false; results: [SuccessResult] };
 
 export type CreateCaseResponse = {
   id: string;
-  implementationSteps: string[];
-  success: boolean;
-  errors?: [{ message: string }];
-  results?: [{ message: string }];
-};
+} & (
+  | { success: true; implementationSteps: string[] }
+  | { success: false; errors: [{ message: string; errorCode: string }] }
+);
 
-export type StartApiResponse = {
-  hasErrors: boolean;
-  results: [
+export type StartFailureResult = {
+  success: false;
+  id: string;
+  errors?: [
     {
-      success: boolean;
-      id: string;
-      errors?: [
-        {
-          message?: {
-            blockedLock: {
+      message?: {
+        message?: string;
+        blockedLock: {
+          configurationItem: {
+            id: string;
+            name: string;
+            path: string;
+          };
+          title: string;
+        };
+        blockingLocks: [
+          {
+            blockingLock: {
               configurationItem: {
                 id: string;
-                name: string;
                 path: string;
               };
-              title: string;
+              id: string;
+              lockOwner: {
+                email: string;
+                id: string;
+                name: string;
+              };
+              lockType: {
+                id: string;
+                name: string;
+              };
             };
-            message?: string;
-          };
-          errorCode: string;
-        }
-      ];
+          }
+        ];
+        errorCode: string;
+        fields?: string[];
+      };
     }
   ];
 };
+export type StartApiResponse =
+  | { hasErrors: false; results: SuccessResult[] }
+  | {
+      hasErrors: true;
+      results: [StartFailureResult | SuccessResult];
+    };
+
+export const isFailure = (
+  result: StartFailureResult | CloseFailureResult | SuccessResult
+): result is StartFailureResult | CloseFailureResult => result.success === false;

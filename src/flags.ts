@@ -40,7 +40,7 @@ const getOrgOrThrow = async (input?: string): Promise<Org> => {
 };
 
 /** like the normal target-org, but could also derive the org from an SFDX_AUTH_URL in the env */
-export const environmentAwareOrgFlag = Flags.custom({
+export const environmentAwareOrgFlag = Flags.custom<Org>({
   char: 'o',
   summary: `For testing, you can supply a username/alias.  It will also parse the org from the environment: ${getEnvVarFullName(
     'SFDX_AUTH_URL'
@@ -53,28 +53,28 @@ export const environmentAwareOrgFlag = Flags.custom({
 });
 
 export const dryrunFlag = Flags.boolean({
-  description: messages.getMessage('command.flags.dryrun.description'),
+  description: messages.getMessage('flags.dry-run.summary'),
   env: getEnvVarFullName('DRYRUN'),
   default: false,
   aliases: ['dryrun'],
 });
 
 export const releaseFlag = Flags.string({
-  description: messages.getMessage('create.flags.release.description'),
+  description: messages.getMessage('flags.release.summary'),
   char: 'r',
   env: getEnvVarFullName('SCHEDULE_BUILD'),
   dependsOn: ['location'],
 });
 
 export const locationFlag = Flags.url({
-  description: messages.getMessage('create.flags.location.description'),
+  description: messages.getMessage('flags.location.summary'),
   char: 'l',
   env: getEnvVarFullName('REPO'),
   dependsOn: ['release'],
 });
 
 export const changeCaseIdFlag = Flags.salesforceId({
-  description: messages.getMessage('command.flags.changecaseid.description'),
+  description: messages.getMessage('flags.changecaseid.summary'),
   char: 'i',
   startsWith: '500',
   env: getEnvVarFullName('ID'),

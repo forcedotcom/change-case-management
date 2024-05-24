@@ -13,10 +13,10 @@ import { Interfaces } from '@oclif/core';
 import { Step, StartApiResponse, CreateCaseResponse, Implementation, CaseWithImpl, Case } from '../types.js';
 import { getEnvVarFullName } from '../functions.js';
 import { dryrunFlag, environmentAwareOrgFlag, locationFlag, releaseFlag } from '../flags.js';
-import { parseErrors, retrieveOrCreateReleaseId } from '../changeCaseApi.js';
+import { retrieveOrCreateReleaseId } from '../changeCaseApi.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
-const messages = Messages.loadMessages('@salesforce/change-case-management', 'changecase');
+const messages = Messages.loadMessages('@salesforce/change-case-management', 'create');
 
 const CHANGE_RECORD_TYPE_ID = env.getString(getEnvVarFullName('CHANGE_RECORD_TYPE_ID'), '012B000000009fBIAQ');
 const CHANGE_TEMPLATE_RECORD_TYPE_ID = env.getString(
@@ -58,8 +58,7 @@ export type CreateResponse = {
   record: CaseWithImpl;
 };
 export default class Create extends SfCommand<CreateResponse> {
-  public static readonly summary = messages.getMessage('create.description');
-  public static readonly description = messages.getMessage('create.description');
+  public static readonly summary = messages.getMessage('summary');
 
   public static readonly examples = [];
 
@@ -67,7 +66,7 @@ export default class Create extends SfCommand<CreateResponse> {
     'target-org': environmentAwareOrgFlag({ required: true }),
     'template-id': Flags.salesforceId({
       length: 'both',
-      summary: messages.getMessage('create.flags.templateid.description'),
+      summary: messages.getMessage('flags.template-id.summary'),
       char: 'i',
       required: true,
       startsWith: '500',
@@ -78,7 +77,7 @@ export default class Create extends SfCommand<CreateResponse> {
     release: releaseFlag,
     location: locationFlag,
     'configuration-item': Flags.string({
-      summary: messages.getMessage('create.flags.configurationitem.description'),
+      summary: messages.getMessage('flags.configuration-item.summary'),
       required: true,
       char: 'c',
       env: getEnvVarFullName('CONFIGURATION_ITEM'),
@@ -109,13 +108,16 @@ export default class Create extends SfCommand<CreateResponse> {
   }
 
   private async startImplementations(createRes: CreateCaseResponse, conn: Connection): Promise<Step[]> {
+    if (createRes.success === false) {
+      throw new SfError(`Creating release failed with ${JSON.stringify(createRes)}`);
+    }
     const implementationsToStart = generateImplementations(createRes.implementationSteps);
 
     // start the implementation steps
     const startResult = await conn.request<StartApiResponse>(
       {
         method: 'PATCH',
-        url: '/services/apexrest/change-management/v1/implementation-steps/start',
+        url: '/services/apexrest/change-management/v2/implementation-steps/start',
         body: JSON.stringify(implementationsToStart),
       },
       { responseType: 'application/json' }
@@ -129,11 +131,7 @@ export default class Create extends SfCommand<CreateResponse> {
     }
     this.styledJSON(startResult);
 
-    throw new SfError(
-      `Starting release failed with ${startResult.results
-        .map((result) => result.errors?.map((error) => error.message?.message).join(','))
-        .join(',')}`
-    );
+    throw new SfError(`Starting release failed with ${JSON.stringify(startResult.results)}}`);
   }
 
   private async createCase(record: CaseWithImpl, conn: Connection): Promise<CreateCaseResponse> {
@@ -142,7 +140,7 @@ export default class Create extends SfCommand<CreateResponse> {
       const createResult = await conn.request<CreateCaseResponse>(
         {
           method: 'POST',
-          url: conn.instanceUrl + '/services/apexrest/change-management/v1/change-cases',
+          url: conn.instanceUrl + '/services/apexrest/change-management/v2/change-cases',
           body: JSON.stringify(record),
         },
         { responseType: 'application/json' }
@@ -155,11 +153,11 @@ export default class Create extends SfCommand<CreateResponse> {
         return createResult;
       }
 
-      throw new SfError(`Creating release failed with ${parseErrors(createResult)}`);
+      throw new SfError(`Creating release failed with ${JSON.stringify(createResult.errors)}`);
     } catch (e) {
       const err = e as Error;
       const error = JSON.parse(err.message) as CreateCaseResponse;
-      throw new SfError(`Creating release failed with ${parseErrors(error)}`);
+      throw new SfError(`Creating release failed with ${JSON.stringify(error)}`);
     }
   }
 
@@ -195,10 +193,6 @@ export default class Create extends SfCommand<CreateResponse> {
     record.Status = 'Approved, Scheduled';
     record.SM_Risk_Level__c = 'Low';
 
-    const startTime = new Date();
-    // set the estimated end time 10 minutes in the future
-    const endTime = new Date(startTime.getTime() + 10 * 60000);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
     const identity = await conn.identity();
     return {
       change: record as Case,
@@ -207,12 +201,12 @@ export default class Create extends SfCommand<CreateResponse> {
           Description__c: 'releasing the salesforce CLI',
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
           OwnerId: identity.user_id,
-          SM_Estimated_Start_Time__c: startTime.toISOString(),
-          SM_Estimated_End_Time__c: endTime.toISOString(),
+          Planned_Start_Time__c: new Date().toISOString(),
+          Planned_Duration_In_Hours__c: 0.25,
           SM_Implementation_Steps__c: 'N/A',
           Configuration_Item_Path_List__c: this.flags['configuration-item'],
           SM_Infrastructure_Type__c: 'Off Core',
-        } as Implementation,
+        } satisfies Implementation,
       ],
     } as CaseWithImpl;
   }
