@@ -190,7 +190,6 @@ export default class Create extends SfCommand<CreateResponse> {
       new Ux({ jsonEnabled: this.jsonEnabled() }),
       this.flags.release as string
     );
-    record.Status = 'Approved, Scheduled';
     record.SM_Risk_Level__c = 'Low';
 
     const identity = await conn.identity();
