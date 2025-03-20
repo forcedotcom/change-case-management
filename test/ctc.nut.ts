@@ -97,7 +97,7 @@ describe('e2e', () => {
     let createResult: CreateResponse;
     it('create', () => {
       const result = execCmd<CreateResponse>(
-        `create --target-org ${session.hubOrg.username} --location ${repoUrl} --release ctc-nut --json`,
+        `create --target-org ${session.hubOrg.username} --location ${repoUrl} --test-environment ${repoUrl}/releases/tag/1.2.3 --release ctc-nut --json`,
         { ensureExitCode: 0 }
       ).jsonOutput?.result;
       assert(result);
@@ -106,6 +106,7 @@ describe('e2e', () => {
       createResult = result!;
       expect(result?.id !== 'NOT PRESENT BECAUSE DRY RUN');
       expect(result?.record.change.SM_Source_Control_Location__c).to.equal(repoUrl);
+      expect(result?.record.change.Test_Environment__c).to.equal(`${repoUrl}/releases/tag/1.2.3`);
     });
     describe('close', () => {
       it('dryrun close by location/release (verifies works with only env)', () => {
