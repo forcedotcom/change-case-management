@@ -76,6 +76,10 @@ export default class Create extends SfCommand<CreateResponse> {
     }),
     release: releaseFlag,
     location: locationFlag,
+    'test-environment': Flags.string({
+      summary: messages.getMessage('flags.test-environment.summary'),
+      required: false,
+    }),
     'configuration-item': Flags.string({
       summary: messages.getMessage('flags.configuration-item.summary'),
       required: true,
@@ -185,6 +189,7 @@ export default class Create extends SfCommand<CreateResponse> {
     record.RecordTypeId = CHANGE_RECORD_TYPE_ID;
     record.SM_Source_Control_Location__c =
       this.flags.location?.toString() ?? (template.SM_Source_Control_Location__c as string);
+    record.Test_Environment__c = this.flags['test-environment'] ?? (template.Test_Environment__c as string);
     record.SM_Release__c = await retrieveOrCreateReleaseId(
       conn,
       new Ux({ jsonEnabled: this.jsonEnabled() }),

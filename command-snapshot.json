@@ -20,7 +20,17 @@
     "command": "create",
     "flagAliases": ["configurationitem", "dryrun", "targetusername", "templateid", "u"],
     "flagChars": ["c", "i", "l", "o", "r"],
-    "flags": ["configuration-item", "dry-run", "flags-dir", "json", "location", "release", "target-org", "template-id"],
+    "flags": [
+      "configuration-item",
+      "dry-run",
+      "flags-dir",
+      "json",
+      "location",
+      "release",
+      "target-org",
+      "template-id",
+      "test-environment"
+    ],
     "plugin": "@salesforce/change-case-management"
   }
 ]
