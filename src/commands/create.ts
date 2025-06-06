@@ -47,6 +47,7 @@ const FIELD_TO_CLONE = [
   'Testing_Method__c',
   'Was_Rollback_or_rap__c',
   'What_is_the_stagger_plan__c',
+  'Service__c',
   'SM_Pipeline__c',
   'SM_Risk_Level__c',
   'Why_is_the_rollback_plan_not_tested__c',
@@ -89,6 +90,10 @@ export default class Create extends SfCommand<CreateResponse> {
       deprecateAliases: true,
     }),
     'dry-run': dryrunFlag,
+    service: Flags.string({
+      summary: messages.getMessage('flags.service.summary'),
+      required: false,
+    }),
   };
 
   private flags!: Interfaces.InferredFlags<typeof Create.flags>;
@@ -190,6 +195,7 @@ export default class Create extends SfCommand<CreateResponse> {
     record.SM_Source_Control_Location__c =
       this.flags.location?.toString() ?? (template.SM_Source_Control_Location__c as string);
     record.Test_Environment__c = this.flags['test-environment'] ?? (template.Test_Environment__c as string);
+    record.Service__c = this.flags['service'] ?? (template.Service__c as string);
     record.SM_Release__c = await retrieveOrCreateReleaseId(
       conn,
       new Ux({ jsonEnabled: this.jsonEnabled() }),
