@@ -12,4 +12,8 @@ Full path from the configuration item, ex: Salesforce.SF_Off_Core.DeveloperTools
 
 # flags.test-environment.summary
 
-Url to the test results for this change case. Will be added to the Change Case under "Automated Test Environment" (Test_Environment__c)
+Url to the test results for this change case. Will be added to the Change Case under "Automated Test Environment" (Test_Environment\_\_c)
+
+# flags.service.summary
+
+The name of the Service for this Case (Service\_\_c)

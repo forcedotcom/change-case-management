@@ -27,6 +27,7 @@
       "json",
       "location",
       "release",
+      "service",
       "target-org",
       "template-id",
       "test-environment"
