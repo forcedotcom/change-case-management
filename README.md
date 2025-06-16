@@ -43,7 +43,7 @@ $ npm install -g @salesforce/change-case-management
 $ sfchangecase COMMAND
 running command...
 $ sfchangecase (--version)
-@salesforce/change-case-management/2.3.0 linux-x64 node-v20.19.0
+@salesforce/change-case-management/2.3.1 linux-x64 node-v20.19.2
 $ sfchangecase --help [COMMAND]
 USAGE
   $ sfchangecase COMMAND
@@ -84,7 +84,7 @@ GLOBAL FLAGS
   --json               Format output as json.
 ```
 
-_See code: [src/commands/close.ts](https://github.com/forcedotcom/change-case-management/blob/2.3.0/src/commands/close.ts)_
+_See code: [src/commands/close.ts](https://github.com/forcedotcom/change-case-management/blob/2.3.1/src/commands/close.ts)_
 
 ## `sfchangecase create`
 
@@ -93,7 +93,7 @@ create a change case record based on a template ID with one implementation step
 ```
 USAGE
   $ sfchangecase create -o <value> -i <value> -c <value> [--json] [--flags-dir <value>] [-r <value> -l
-    <value>] [--test-environment <value>] [--dry-run]
+    <value>] [--test-environment <value>] [--dry-run] [--service <value>]
 
 FLAGS
   -c, --configuration-item=<value>  (required) Full path from the configuration item, ex:
@@ -104,14 +104,15 @@ FLAGS
                                     from the environment: SF_CHANGE_CASE_SFDX_AUTH_URL
   -r, --release=<value>             schedule build of the new release
       --dry-run                     run the command without making any API calls - all calls will be 'successful'
+      --service=<value>             The name of the Service for this Case (Service\_\_c)
       --test-environment=<value>    Url to the test results for this change case. Will be added to the Change Case under
-                                    "Automated Test Environment" (Test_Environment__c)
+                                    "Automated Test Environment" (Test_Environment\_\_c)
 
 GLOBAL FLAGS
   --flags-dir=<value>  Import flag values from a directory.
   --json               Format output as json.
 ```
 
-_See code: [src/commands/create.ts](https://github.com/forcedotcom/change-case-management/blob/2.3.0/src/commands/create.ts)_
+_See code: [src/commands/create.ts](https://github.com/forcedotcom/change-case-management/blob/2.3.1/src/commands/create.ts)_
 
 <!-- commandsstop -->

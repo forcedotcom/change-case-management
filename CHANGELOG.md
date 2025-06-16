@@ -1,3 +1,9 @@
+## [2.3.1](https://github.com/forcedotcom/change-case-management/compare/2.3.0...2.3.1) (2025-06-16)
+
+### Bug Fixes
+
+- add service ([6a7d700](https://github.com/forcedotcom/change-case-management/commit/6a7d700685b047b680b320bee4dc2a88c3bfe334))
+
 # [2.3.0](https://github.com/forcedotcom/change-case-management/compare/2.2.0...2.3.0) (2025-03-25)
 
 ### Features
