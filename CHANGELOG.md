@@ -1,3 +1,9 @@
+## [2.3.2](https://github.com/forcedotcom/change-case-management/compare/2.3.1...2.3.2) (2025-08-29)
+
+### Bug Fixes
+
+- oss compliance ([8ba3610](https://github.com/forcedotcom/change-case-management/commit/8ba3610a3e11fc8fbe1a9408f86ecf11edbc6785))
+
 ## [2.3.1](https://github.com/forcedotcom/change-case-management/compare/2.3.0...2.3.1) (2025-06-16)
 
 ### Bug Fixes
