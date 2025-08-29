@@ -7,21 +7,21 @@
   },
   "type": "module",
   "dependencies": {
-    "@oclif/core": "^3.26.6",
-    "@salesforce/core": "^7.3.9",
-    "@salesforce/kit": "^3.1.0",
-    "@salesforce/sf-plugins-core": "^9.0.0",
-    "@salesforce/ts-types": "^2.0.9"
+    "@oclif/core": "^4",
+    "@salesforce/core": "^8.2.7",
+    "@salesforce/kit": "^3.1.6",
+    "@salesforce/sf-plugins-core": "^11.2.4",
+    "@salesforce/ts-types": "^2.0.11"
   },
   "devDependencies": {
-    "@oclif/plugin-command-snapshot": "^5.1.9",
-    "@salesforce/cli-plugins-testkit": "^5.3.5",
-    "@salesforce/dev-scripts": "^9.1.2",
-    "@salesforce/plugin-command-reference": "^3.0.86",
-    "eslint-plugin-sf-plugin": "^1.18.4",
+    "@oclif/plugin-command-snapshot": "^5.2.3",
+    "@salesforce/cli-plugins-testkit": "^5.3.20",
+    "@salesforce/dev-scripts": "^11.0.4",
+    "@salesforce/plugin-command-reference": "^3.1.5",
+    "eslint-plugin-sf-plugin": "^1.18.8",
     "oclif": "^4.11.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.3"
+    "typescript": "^5.5.4"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -36,7 +36,7 @@
   "keywords": [
     "sfdx-plugin"
   ],
-  "license": "BSD-3-Clause",
+  "license": "Apache-2.0",
   "oclif": {
     "commands": "./lib/commands",
     "bin": "sfchangecase",
@@ -61,6 +61,7 @@
     "clean-all": "sf-clean all",
     "compile": "wireit",
     "docs": "sf-docs",
+    "fix-license": "eslint src test --fix --rule \"header/header: [2]\"",
     "format": "wireit",
     "link-check": "wireit",
     "lint": "wireit",
