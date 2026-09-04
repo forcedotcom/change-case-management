@@ -1,0 +1,20 @@
+{
+  "src/changeCaseApi.ts": {
+    "@typescript-eslint/no-base-to-string": {
+      "count": 2
+    },
+    "camelcase": {
+      "count": 1
+    }
+  },
+  "src/commands/close.ts": {
+    "@typescript-eslint/prefer-nullish-coalescing": {
+      "count": 1
+    }
+  },
+  "src/commands/create.ts": {
+    "camelcase": {
+      "count": 11
+    }
+  }
+}
