@@ -111,7 +111,7 @@ describe('e2e', () => {
       ).jsonOutput?.result;
       assert(result);
       // I can't figure out why asserts aren't narrowing.
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
       createResult = result!;
       expect(result?.id !== 'NOT PRESENT BECAUSE DRY RUN');
       expect(result?.record.change.SM_Source_Control_Location__c).to.equal(repoUrl);

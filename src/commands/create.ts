@@ -219,7 +219,7 @@ export default class Create extends SfCommand<CreateResponse> {
       implementationSteps: [
         {
           Description__c: 'releasing the salesforce CLI',
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+
           OwnerId: identity.user_id,
           Planned_Start_Time__c: new Date().toISOString(),
           Planned_Duration_In_Hours__c: 0.25,
@@ -228,7 +228,7 @@ export default class Create extends SfCommand<CreateResponse> {
           SM_Infrastructure_Type__c: 'Off Core',
         } satisfies Implementation,
       ],
-    } as CaseWithImpl;
+    };
   }
 }
 
