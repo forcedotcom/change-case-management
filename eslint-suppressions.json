@@ -13,30 +13,8 @@
     }
   },
   "src/commands/create.ts": {
-    "@typescript-eslint/no-unsafe-argument": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unsafe-assignment": {
-      "count": 5
-    },
-    "@typescript-eslint/no-unsafe-call": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unsafe-member-access": {
-      "count": 1
-    },
     "camelcase": {
       "count": 11
-    }
-  },
-  "test/ctc.nut.ts": {
-    "@typescript-eslint/no-unsafe-call": {
-      "count": 14
-    }
-  },
-  "test/failures.test.ts": {
-    "@typescript-eslint/no-unsafe-call": {
-      "count": 2
     }
   }
 }
