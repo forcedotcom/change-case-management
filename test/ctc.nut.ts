@@ -103,10 +103,11 @@ describe('e2e', () => {
     });
   });
   describe('real create with close', () => {
+    const createTimeStamp = Date.now().toString();
     let createResult: CreateResponse;
     it('create', () => {
       const result = execCmd<CreateResponse>(
-        `create --target-org ${session.hubOrg.username} --location ${repoUrl} --test-environment ${repoUrl}/releases/tag/1.2.3 --release ctc-nut --json`,
+        `create --target-org ${session.hubOrg.username} --location ${repoUrl} --test-environment ${repoUrl}/releases/tag/1.2.3 --release ctc-nut-${createTimeStamp} --json`,
         { ensureExitCode: 0 }
       ).jsonOutput?.result;
       assert(result);
@@ -119,9 +120,12 @@ describe('e2e', () => {
     });
     describe('close', () => {
       it('dryrun close by location/release (verifies works with only env)', () => {
-        const result = execCmd<CloseResult>(`close --location ${repoUrl} --release ctc-nut --json --dryrun`, {
-          ensureExitCode: 0,
-        }).jsonOutput?.result;
+        const result = execCmd<CloseResult>(
+          `close --location ${repoUrl} --release ctc-nut-${createTimeStamp} --json --dryrun`,
+          {
+            ensureExitCode: 0,
+          }
+        ).jsonOutput?.result;
         assert(result);
         expect(result?.case.Status === 'Closed');
         expect(result?.case.Id).to.equal(createResult.id);
