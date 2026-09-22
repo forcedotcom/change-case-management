@@ -23,8 +23,8 @@ const messages = Messages.loadMessages('@salesforce/change-case-management', 'ch
 
 async function maybeGetOrg(input: string): Promise<Org>;
 async function maybeGetOrg(input: undefined): Promise<undefined>;
-async function maybeGetOrg(input?: string | undefined): Promise<Org | undefined>;
-async function maybeGetOrg(input?: string | undefined): Promise<Org | undefined> {
+async function maybeGetOrg(input?: string): Promise<Org | undefined>;
+async function maybeGetOrg(input?: string): Promise<Org | undefined> {
   try {
     return await Org.create({ aliasOrUsername: input });
   } catch (e) {
