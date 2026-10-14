@@ -43,7 +43,7 @@ $ npm install -g @salesforce/change-case-management
 $ sfchangecase COMMAND
 running command...
 $ sfchangecase (--version)
-@salesforce/change-case-management/2.3.2 linux-x64 node-v20.19.4
+@salesforce/change-case-management/2.3.3 linux-x64 node-v22.23.3
 $ sfchangecase --help [COMMAND]
 USAGE
   $ sfchangecase COMMAND
@@ -69,22 +69,23 @@ USAGE
     Implemented - per plan|Not Implemented|Rolled back - with no impact] [--dry-run]
 
 FLAGS
-  -i, --change-case-id=<value>  change case id
-  -l, --location=<value>        url of the source control location
+  -i, --change-case-id=<value>  [env: SF_CHANGE_CASE_ID] change case id
+  -l, --location=<value>        [env: SF_CHANGE_CASE_REPO] url of the source control location
   -o, --target-org=<value>      (required) For testing, you can supply a username/alias.  It will also parse the org
                                 from the environment: SF_CHANGE_CASE_SFDX_AUTH_URL
-  -r, --release=<value>         schedule build of the new release
-  -s, --status=<option>         [default: Implemented - per plan] What the status of the implementation steps should be
-                                set to.
+  -r, --release=<value>         [env: SF_CHANGE_CASE_SCHEDULE_BUILD] schedule build of the new release
+  -s, --status=<option>         [default: Implemented - per plan, env: SF_CHANGE_CASE_STATUS] What the status of the
+                                implementation steps should be set to.
                                 <options: Implemented - per plan|Not Implemented|Rolled back - with no impact>
-      --dry-run                 run the command without making any API calls - all calls will be 'successful'
+      --dry-run                 [env: SF_CHANGE_CASE_DRYRUN] run the command without making any API calls - all calls
+                                will be 'successful'
 
 GLOBAL FLAGS
   --flags-dir=<value>  Import flag values from a directory.
   --json               Format output as json.
 ```
 
-_See code: [src/commands/close.ts](https://github.com/forcedotcom/change-case-management/blob/2.3.2/src/commands/close.ts)_
+_See code: [src/commands/close.ts](https://github.com/forcedotcom/change-case-management/blob/2.3.3/src/commands/close.ts)_
 
 ## `sfchangecase create`
 
@@ -96,14 +97,15 @@ USAGE
     <value>] [--test-environment <value>] [--dry-run] [--service <value>]
 
 FLAGS
-  -c, --configuration-item=<value>  (required) Full path from the configuration item, ex:
-                                    Salesforce.SF_Off_Core.DeveloperTools.NPM
-  -i, --template-id=<value>         (required) change case template id
-  -l, --location=<value>            url of the source control location
+  -c, --configuration-item=<value>  (required) [env: SF_CHANGE_CASE_CONFIGURATION_ITEM] Full path from the configuration
+                                    item, ex: Salesforce.SF_Off_Core.DeveloperTools.NPM
+  -i, --template-id=<value>         (required) [env: SF_CHANGE_CASE_TEMPLATE_ID] change case template id
+  -l, --location=<value>            [env: SF_CHANGE_CASE_REPO] url of the source control location
   -o, --target-org=<value>          (required) For testing, you can supply a username/alias.  It will also parse the org
                                     from the environment: SF_CHANGE_CASE_SFDX_AUTH_URL
-  -r, --release=<value>             schedule build of the new release
-      --dry-run                     run the command without making any API calls - all calls will be 'successful'
+  -r, --release=<value>             [env: SF_CHANGE_CASE_SCHEDULE_BUILD] schedule build of the new release
+      --dry-run                     [env: SF_CHANGE_CASE_DRYRUN] run the command without making any API calls - all
+                                    calls will be 'successful'
       --service=<value>             The name of the Service for this Case (Service\_\_c)
       --test-environment=<value>    Url to the test results for this change case. Will be added to the Change Case under
                                     "Automated Test Environment" (Test_Environment\_\_c)
@@ -113,6 +115,6 @@ GLOBAL FLAGS
   --json               Format output as json.
 ```
 
-_See code: [src/commands/create.ts](https://github.com/forcedotcom/change-case-management/blob/2.3.2/src/commands/create.ts)_
+_See code: [src/commands/create.ts](https://github.com/forcedotcom/change-case-management/blob/2.3.3/src/commands/create.ts)_
 
 <!-- commandsstop -->

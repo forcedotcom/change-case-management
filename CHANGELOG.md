@@ -1,3 +1,9 @@
+## [2.3.3](https://github.com/forcedotcom/change-case-management/compare/2.3.2...2.3.3) (2026-10-14)
+
+### Bug Fixes
+
+- **deps:** bump fast-copy from 3.0.2 to 3.1.0 ([#166](https://github.com/forcedotcom/change-case-management/issues/166)) ([3c959d5](https://github.com/forcedotcom/change-case-management/commit/3c959d5931a92a54e01f2dfe0eaa9a31747b1769))
+
 ## [2.3.2](https://github.com/forcedotcom/change-case-management/compare/2.3.1...2.3.2) (2025-08-29)
 
 ### Bug Fixes
