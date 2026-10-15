@@ -1,3 +1,9 @@
+## [2.3.4](https://github.com/forcedotcom/change-case-management/compare/2.3.3...2.3.4) (2026-10-15)
+
+### Bug Fixes
+
+- remove npm-shrinkwrap from files and prepack ([40af6e1](https://github.com/forcedotcom/change-case-management/commit/40af6e148e96bfcb1441c3be4fa55c54f69873cf))
+
 ## [2.3.3](https://github.com/forcedotcom/change-case-management/compare/2.3.2...2.3.3) (2026-10-14)
 
 ### Bug Fixes

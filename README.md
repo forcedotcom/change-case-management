@@ -43,7 +43,7 @@ $ npm install -g @salesforce/change-case-management
 $ sfchangecase COMMAND
 running command...
 $ sfchangecase (--version)
-@salesforce/change-case-management/2.3.3 linux-x64 node-v22.23.3
+@salesforce/change-case-management/2.3.4 linux-x64 node-v22.23.3
 $ sfchangecase --help [COMMAND]
 USAGE
   $ sfchangecase COMMAND
@@ -85,7 +85,7 @@ GLOBAL FLAGS
   --json               Format output as json.
 ```
 
-_See code: [src/commands/close.ts](https://github.com/forcedotcom/change-case-management/blob/2.3.3/src/commands/close.ts)_
+_See code: [src/commands/close.ts](https://github.com/forcedotcom/change-case-management/blob/2.3.4/src/commands/close.ts)_
 
 ## `sfchangecase create`
 
@@ -115,6 +115,6 @@ GLOBAL FLAGS
   --json               Format output as json.
 ```
 
-_See code: [src/commands/create.ts](https://github.com/forcedotcom/change-case-management/blob/2.3.3/src/commands/create.ts)_
+_See code: [src/commands/create.ts](https://github.com/forcedotcom/change-case-management/blob/2.3.4/src/commands/create.ts)_
 
 <!-- commandsstop -->
